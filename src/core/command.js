@@ -3,6 +3,6 @@
  * @type {Commands}
  */
 module.exports = class Commands {
-    constructor(client) {
-    }
-}
+	// constructor(client) {
+	// }
+};

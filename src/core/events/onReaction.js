@@ -3,13 +3,13 @@
  * @param client
  */
 function reactionRemove(client) {
-    client.on('raw', (raw) => {
-        /**
+	client.on('raw', (raw) => {
+		/**
          * Quando viene tolta una reazione
          */
-        if (raw.t === 'MESSAGE_REACTION_REMOVE') {
-        }
-    })
+		// if (raw.t === 'MESSAGE_REACTION_REMOVE') {
+		// }
+	});
 }
 
 /**
@@ -17,13 +17,13 @@ function reactionRemove(client) {
  * @param client
  */
 function reactionAdd(client) {
-    client.on('raw', (raw) => {
-        /**
+	client.on('raw', (raw) => {
+		/**
          * Quando viene aggiunta una reazione
          */
-        if (raw.t === 'MESSAGE_REACTION_ADD') {
-        }
-    })
+		// if (raw.t === 'MESSAGE_REACTION_ADD') {
+		// }
+	});
 }
 
 /**
@@ -31,8 +31,8 @@ function reactionAdd(client) {
  * @param client
  */
 function init(client) {
-    reactionAdd(client)
-    reactionRemove(client)
+	reactionAdd(client);
+	reactionRemove(client);
 }
 
-module.exports = {init}
+module.exports = { init };
