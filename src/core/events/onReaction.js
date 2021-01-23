@@ -5,8 +5,8 @@
 function reactionRemove(client) {
 	client.on('raw', (raw) => {
 		/**
-         * Quando viene tolta una reazione
-         */
+     * Quando viene tolta una reazione
+     */
 		// if (raw.t === 'MESSAGE_REACTION_REMOVE') {
 		// }
 	});
@@ -19,8 +19,8 @@ function reactionRemove(client) {
 function reactionAdd(client) {
 	client.on('raw', (raw) => {
 		/**
-         * Quando viene aggiunta una reazione
-         */
+     * Quando viene aggiunta una reazione
+     */
 		// if (raw.t === 'MESSAGE_REACTION_ADD') {
 		// }
 	});

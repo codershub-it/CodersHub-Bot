@@ -6,7 +6,8 @@
   "homepage": "https://github.com/codershub-it/CodersHub-Bot",
   "scripts": {
     "start": "node index.js",
-    "test": "eslint src/**"
+    "test": "eslint src/**",
+    "prettier": "prettier --write ."
   },
   "author": "Davidev And Comunity",
   "keywords": [

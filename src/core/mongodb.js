@@ -1,8 +1,8 @@
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const config = {
-	bufferMaxEntries:   0,
-	useNewUrlParser:    true,
+	bufferMaxEntries: 0,
+	useNewUrlParser: true,
 	useUnifiedTopology: true,
 };
 const Users = require('./model/users');

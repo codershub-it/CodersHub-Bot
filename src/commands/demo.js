@@ -1,7 +1,6 @@
 const Commands = require('../core/command');
 
 module.exports = class Demo extends Commands {
-
 	constructor(client) {
 		super(client);
 		this.cmd = '';
@@ -15,11 +14,11 @@ module.exports = class Demo extends Commands {
 	}
 
 	/**
-     * Qui si esegue il processo del comando
-     * @param message
-     * @param bot
-     * @returns {Promise<void>}
-     */
+   * Qui si esegue il processo del comando
+   * @param message
+   * @param bot
+   * @returns {Promise<void>}
+   */
 	async execution(message, bot) {
 		message.reply('Demo');
 	}
