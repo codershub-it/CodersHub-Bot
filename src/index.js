@@ -64,13 +64,13 @@ module.exports = class Bot {
 			embed_example: new EmbedExample(this.client),
 			help: new Help(this.client),
 			ping: new Ping(this.client),
-			//test: new TestList(this.client),
+			// test: new TestList(this.client),
 			code: new Code(this.client),
 		};
 	}
 
 	async loadCore() {
-		//await mongo.init();
+		// await mongo.init();
 		onError.init(this.client);
 		onMessage.init(this.client);
 		onReaction.init(this.client);

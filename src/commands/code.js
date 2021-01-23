@@ -38,16 +38,17 @@ module.exports = class Code extends Commands {
 			code = code.substr(1);
 		}
 
-		// console.log(xxx)
+		let resp_str = '';
+
+		if (lang) {
+			resp_str = `Codice **${lang}** condiviso da <@${id_author}>:`;
+		}
+		else {
+			resp_str = `Codice condiviso da <@${id_author}>:`;
+		}
+
 		message.channel
-			.send(
-				`Codice **${lang}** condiviso da <@${id_author}>:` +
-          '\n```' +
-          lang +
-          '\n' +
-          code +
-          '```',
-			)
+			.send(resp_str + '\n```' + lang + '\n' + code + '```')
 			.catch((e) => {
 				console.log(e);
 			});
