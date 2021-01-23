@@ -5,7 +5,9 @@
   "main": "./index.js",
   "homepage": "https://github.com/codershub-it/CodersHub-Bot",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "eslint src/**",
+    "test-fix": "eslint src/**"
   },
   "author": "Davidev And Comunity",
   "keywords": [
@@ -22,5 +24,7 @@
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^7.18.0"
+  }
 }
