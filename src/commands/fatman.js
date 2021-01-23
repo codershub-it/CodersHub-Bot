@@ -1,7 +1,6 @@
 const Commands = require('../core/command');
 
 module.exports = class Fatman extends Commands {
-
 	constructor(client) {
 		super(client);
 		this.cmd = 'fatman';
@@ -10,7 +9,10 @@ module.exports = class Fatman extends Commands {
 		this.example = '';
 		this.description = 'Elimina 100 messaggi un colpo solo';
 		this.timer = 0;
-		this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore];
+		this.access = [
+			client._botSettings.rules.Admin,
+			client._botSettings.rules.Moderatore,
+		];
 		this.displayHelp = 1;
 	}
 
@@ -31,17 +33,16 @@ module.exports = class Fatman extends Commands {
 			});
 		}
 		await clear();
-
 	}
 
 	/**
-     * Attende un x tempo in ms
-     * @param ms
-     */
+   * Attende un x tempo in ms
+   * @param ms
+   */
 	wait(ms) {
 		const start = new Date().getTime();
 		let end = start;
-		while(end < start + ms) {
+		while (end < start + ms) {
 			end = new Date().getTime();
 		}
 	}

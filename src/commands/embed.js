@@ -5,16 +5,20 @@ module.exports = class Embed extends Commands {
 		super(client);
 		this.cmd = 'embed';
 		this.alias = 'em';
-		this.args = '[#nome_canale (Opzionale)] Questo parametro serve a far stampare il messaggio in un\'altro canale';
-		this.example = `${ client.conf.prefix }embed 123456789123`;
-		this.description = 'Con questo comando scrivi un messaggio in embed allegando il file .json. Usa questo sito https://leovoel.github.io/embed-visualizer per creare il file json.';
+		this.args =
+      '[#nome_canale (Opzionale)] Questo parametro serve a far stampare il messaggio in un\'altro canale';
+		this.example = `${client.conf.prefix}embed 123456789123`;
+		this.description =
+      'Con questo comando scrivi un messaggio in embed allegando il file .json. Usa questo sito https://leovoel.github.io/embed-visualizer per creare il file json.';
 		this.timer = 0;
-		this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore];
+		this.access = [
+			client._botSettings.rules.Admin,
+			client._botSettings.rules.Moderatore,
+		];
 		this.displayHelp = 1;
 	}
 
 	async execution(message, bot) {
-
 		// Prendo id del canale
 		const channelId = message.args.replace(/[^0-9]/g, '');
 		const id_author = message.author.id;
@@ -31,7 +35,6 @@ module.exports = class Embed extends Commands {
 
 		// Estraggo i file allegati, il primo.
 		if (messageAttachments.isArray || messageAttachments.length > 0) {
-
 			const _maFileUrl = messageAttachments[0].url;
 			const _nameFile = messageAttachments[0].name;
 
@@ -48,17 +51,23 @@ module.exports = class Embed extends Commands {
 				}
 				catch (e) {
 					// Errore caricamento file
-					message.reply(` non è stato possibile caricare il file usa **${ bot.conf.prefix }embed_exemple** per scaricare la demo`);
+					message.reply(
+						` non è stato possibile caricare il file usa **${bot.conf.prefix}embed_exemple** per scaricare la demo`,
+					);
 				}
 			}
 		}
 		else {
-			message.reply(` non hai caricato nessun file .json, **${ bot.conf.prefix }embed_exemple** per scaricare la demo`);
+			message.reply(
+				` non hai caricato nessun file .json, **${bot.conf.prefix}embed_exemple** per scaricare la demo`,
+			);
 		}
 		// Invia il messaggio al canale specifico
 		if (channelId) {
 			bot.channels.cache.get(channelId).send({ embed });
-			message.reply(` messaggio inviato con successo nel canale: <#${channelId}>`);
+			message.reply(
+				` messaggio inviato con successo nel canale: <#${channelId}>`,
+			);
 			embed = null;
 		}
 		if (embed) {

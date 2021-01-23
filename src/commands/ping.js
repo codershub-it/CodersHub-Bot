@@ -1,7 +1,6 @@
 const Commands = require('../core/command');
 
 module.exports = class Ping extends Commands {
-
 	constructor(client) {
 		super(client);
 		this.cmd = 'ping';
@@ -16,7 +15,11 @@ module.exports = class Ping extends Commands {
 
 	async execution(message, bot) {
 		const m = await message.channel.send('Ping?');
-		m.edit(`Pong! 🏓 Latenza server ${m.createdTimestamp - message.createdTimestamp}ms. Latenza API ${Math.round(bot.ws.ping)}ms`).catch((e) => {
+		m.edit(
+			`Pong! 🏓 Latenza server ${
+				m.createdTimestamp - message.createdTimestamp
+			}ms. Latenza API ${Math.round(bot.ws.ping)}ms`,
+		).catch((e) => {
 			console.log(e);
 		});
 	}

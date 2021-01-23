@@ -1,23 +1,22 @@
 const Commands = require('../core/command');
 
 module.exports = class Code extends Commands {
-
 	constructor(client) {
 		super(client);
 		this.cmd = 'code';
 		this.alias = 'co';
 		this.args = '[tipo linguaggio(Opzionale)] inserisci il codice...';
-		this.example = `${ client.conf.prefix }code [javascript] var idea = 3`;
-		this.description = 'Utilizza questo comando per condividere il tuo codice nel CodersHub.\n' +
-            'Il tipo di linguaggio deve essere inserito tra parentesi quadre (es:[php]) prima del tuo codice.\n\n' +
-            '**Attenzione** il carattere ` (apostrofo rovesciato) verrà sostituito con §';
+		this.example = `${client.conf.prefix}code [javascript] var idea = 3`;
+		this.description =
+      'Utilizza questo comando per condividere il tuo codice nel CodersHub.\n' +
+      'Il tipo di linguaggio deve essere inserito tra parentesi quadre (es:[php]) prima del tuo codice.\n\n' +
+      '**Attenzione** il carattere ` (apostrofo rovesciato) verrà sostituito con §';
 		this.timer = 0;
 		this.access = [client._botSettings.rules.everyone];
 		this.displayHelp = 1;
 	}
 
 	async execution(message, bot) {
-
 		const id_author = message.author.id;
 		let code = message.args;
 		let lang = '';
@@ -40,9 +39,18 @@ module.exports = class Code extends Commands {
 		}
 
 		// console.log(xxx)
-		message.channel.send(`Codice **${lang}** condiviso da <@${id_author}>:` + '\n```' + lang + '\n' + code + '```').catch((e) => {
-			console.log(e);
-		});
+		message.channel
+			.send(
+				`Codice **${lang}** condiviso da <@${id_author}>:` +
+          '\n```' +
+          lang +
+          '\n' +
+          code +
+          '```',
+			)
+			.catch((e) => {
+				console.log(e);
+			});
 		await message.delete();
 	}
 };
