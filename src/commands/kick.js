@@ -13,7 +13,7 @@ module.exports = class Help extends Commands {
     this.displayHelp = 1
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const user = message.mentions.users.first()
     const str_mention = message.args.split(' ')[0]
     let reason = message.args.replace(str_mention, '').trim()

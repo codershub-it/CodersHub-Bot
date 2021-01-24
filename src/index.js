@@ -4,7 +4,6 @@ const onReaction = require('./core/events/onReaction')
 const settings = require('./core/settings')
 const Discord = require('discord.js')
 const { MessageEmbed } = require('discord.js')
-const mongo = require('./core/mongodb')
 const fetch = require('node-fetch')
 require('dotenv').config()
 
@@ -48,7 +47,6 @@ module.exports = class Bot {
     const Fatman = require('./commands/fatman')
     const EmbedExample = require('./commands/embed_example')
     const Ping = require('./commands/ping')
-    const TestList = require('./commands/test_list')
     const Code = require('./commands/code')
     const Caffe = require('./commands/caffe')
 

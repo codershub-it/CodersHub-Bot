@@ -13,7 +13,7 @@ module.exports = class Caffe extends Commands {
     this.displayHelp = 1
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const id_author = message.author.id
     if (message.mentions.members.first()) {
       const id_mention = message.mentions.members.first().id

@@ -18,7 +18,6 @@ module.exports = class Embed extends Commands {
   async execution(message, bot) {
     // Prendo id del canale
     const channelId = message.args.replace(/[^0-9]/g, '')
-    const id_author = message.author.id
 
     // Verifico la presenza del canale
     if (!bot.channels.cache.get(channelId) && channelId) {
