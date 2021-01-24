@@ -3,7 +3,7 @@
  * @param client
  */
 function reactionRemove(client) {
-  client.on('raw', (raw) => {
+  client.on('raw', () => {
     /**
      * Quando viene tolta una reazione
      */
@@ -17,7 +17,7 @@ function reactionRemove(client) {
  * @param client
  */
 function reactionAdd(client) {
-  client.on('raw', (raw) => {
+  client.on('raw', () => {
     /**
      * Quando viene aggiunta una reazione
      */

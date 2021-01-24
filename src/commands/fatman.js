@@ -13,7 +13,7 @@ module.exports = class Fatman extends Commands {
     this.displayHelp = 1
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     await message.reply(' la bomba è stata lanciata')
     this.wait(1000)
     await message.reply(' 3 :skull_crossbones: ')

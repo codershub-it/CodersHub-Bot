@@ -13,7 +13,7 @@ module.exports = class EmbedExemple extends Commands {
     this.displayHelp = 1
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const id_author = message.author.id
     message.channel
       .send(`<@${id_author}> questo è il file di esempio:`, {

@@ -19,7 +19,7 @@ module.exports = class Demo extends Commands {
    * @param bot
    * @returns {Promise<void>}
    */
-  async execution(message, bot) {
+  async execution(message) {
     message.reply('Demo')
   }
 }
