@@ -15,7 +15,9 @@ module.exports = class help extends Commands {
 	}
 
 	async execution(message, bot) {
-		const nomeComando = message.args;
+		let nomeComando = message.args;
+		// Estrapolo il prefix dal nome del comando se presente.
+		nomeComando = nomeComando.replace(`${bot.conf.prefix}`, '');
 		let msg = '';
 		// Estrapola tutti i comandi disponibili
 		const commands = bot._botCommands;
@@ -67,7 +69,14 @@ module.exports = class help extends Commands {
 		else {
 			emb.setTitle('Dettaglio comando');
 		}
-		emb.setDescription(msg);
+		if (msg.length > 0) {
+			emb.setDescription(msg);
+		}
+		else {
+			emb.setDescription(
+				`Purtroppo questo comando non esiste.\nUsa **${bot.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
+			);
+		}
 		emb.setColor('RANDOM');
 		emb.setThumbnail(
 			'https://media1.tenor.com/images/0edd53dd2110147b786329c2e24fb1d0/tenor.gif',
