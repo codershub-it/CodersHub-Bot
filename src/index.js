@@ -49,6 +49,7 @@ module.exports = class Bot {
     const Ping = require('./commands/ping')
     const Code = require('./commands/code')
     const Caffe = require('./commands/caffe')
+    const Hint = require('./commands/hint')
     const Poll = require('./commands/poll')
 
     return {
@@ -62,6 +63,7 @@ module.exports = class Bot {
       ping: new Ping(this.client),
       // test: new TestList(this.client),
       code: new Code(this.client),
+      hint: new Hint(this.client),
       poll: new Poll(this.client),
     }
   }
