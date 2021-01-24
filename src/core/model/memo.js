@@ -11,12 +11,12 @@ module.exports = class Memo {
   constructor(db) {
     this.collection = db.collection('memos')
   }
-  async addMemo(user) {
-    const newUser = await this.collection.insertOne(user)
-    return newUser
-  }
-
-  async getMemoFromId(_id) {
-    const value_memo = await this.collection.find({ _id: _id })
-  }
+  // async addMemo(user) {
+  //   const newUser = await this.collection.insertOne(user)
+  //   return newUser
+  // }
+  //
+  // async getMemoFromId(_id) {
+  //   const value_memo = await this.collection.find({ _id: _id })
+  // }
 }

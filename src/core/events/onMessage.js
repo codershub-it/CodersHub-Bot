@@ -35,7 +35,7 @@ function readMessage(message, client) {
   /**
    * Estraggo tutti i comandi inseriti, verifico il permesso e avvio il comando.
    */
-  Object.entries(client._botCommands).forEach(([rif, cmd]) => {
+  Object.entries(client._botCommands).forEach(([, cmd]) => {
     if (cmd.cmd === message.cmd || cmd.alias === message.cmd) {
       // Permesso di accesso al comando.
       const rules = cmd.access

@@ -54,13 +54,16 @@ module.exports = class help extends Commands {
       }
     })
     const emb = new bot._botMessageEmbed()
+    emb.setTitle('Bot ufficiale di CodersHub')
+    let str_msg = ''
     if (!nomeComando) {
-      emb.setTitle('Ciao! Questo è il bot ufficiale di CodersHub')
+      str_msg += `Ecco la lista dei comandi:\n`
     } else {
-      emb.setTitle('Dettaglio comando')
+      str_msg += `Ecco il dettaglio del comando\n`
     }
+    str_msg += msg
     if (msg.length > 0) {
-      emb.setDescription(msg)
+      emb.setDescription(str_msg)
     } else {
       emb.setDescription(
         `Purtroppo questo comando non esiste.\nUsa **${bot.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
@@ -68,8 +71,12 @@ module.exports = class help extends Commands {
     }
     emb.setColor('RANDOM')
     emb.setThumbnail('https://media1.tenor.com/images/0edd53dd2110147b786329c2e24fb1d0/tenor.gif')
-    message.channel.send(emb).catch((e) => {
-      console.log(e)
-    })
+    bot.channels.cache
+      .find((channel) => channel.name === 'comandi-bot')
+      .send(`**Ciao <@${message.author.id}>** hai attivato il comando ${bot.conf.prefix}help`, emb)
+      .catch((e) => {
+        console.log(e)
+      })
+    message.delete()
   }
 }
