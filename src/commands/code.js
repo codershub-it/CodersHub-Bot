@@ -46,12 +46,16 @@ module.exports = class Code extends Commands {
 		else {
 			resp_str = `Codice condiviso da <@${id_author}>:`;
 		}
-
-		message.channel
-			.send(resp_str + '\n```' + lang + '\n' + code + '```')
-			.catch((e) => {
-				console.log(e);
-			});
-		await message.delete();
+		if (code.length < 1) {
+			message.reply(' il codice inserito deve avere più di 1 carattere');
+		}
+		else {
+			message.channel
+				.send(resp_str + '\n```' + lang + '\n' + code + '```')
+				.catch((e) => {
+					console.log(e);
+				});
+			await message.delete();
+		}
 	}
 };
