@@ -55,15 +55,8 @@ module.exports = class help extends Commands {
     })
     const emb = new bot._botMessageEmbed()
     emb.setTitle('Bot ufficiale di CodersHub')
-    let str_msg = ''
-    if (!nomeComando) {
-      str_msg += `Ecco la lista dei comandi:\n`
-    } else {
-      str_msg += `Ecco il dettaglio del comando\n`
-    }
-    str_msg += msg
     if (msg.length > 0) {
-      emb.setDescription(str_msg)
+      emb.setDescription(msg)
     } else {
       emb.setDescription(
         `Purtroppo questo comando non esiste.\nUsa **${bot.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
