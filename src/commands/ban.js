@@ -39,7 +39,7 @@ module.exports = class Ban extends Commands {
     if (member && day_ban) {
       member
         .ban({ days: day_ban, reason: reason })
-        .then((GuildMember) => {
+        .then(() => {
           message.reply(
             `:wave: ${message.displayName} hai effettuato il ban con successo! https://gfycat.com/playfulfittingcaribou :point_right:`,
           )

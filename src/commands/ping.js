@@ -15,12 +15,14 @@ module.exports = class Ping extends Commands {
 
   async execution(message, bot) {
     const m = await message.channel.send('Ping?')
-    m.edit(
-      `Pong! 🏓 Latenza server ${
-        m.createdTimestamp - message.createdTimestamp
-      }ms. Latenza API ${Math.round(bot.ws.ping)}ms`,
-    ).catch((e) => {
-      console.log(e)
-    })
+    return m
+      .edit(
+        `Pong! 🏓 Latenza server ${
+          m.createdTimestamp - message.createdTimestamp
+        }ms. Latenza API ${Math.round(bot.ws.ping)}ms`,
+      )
+      .catch((e) => {
+        console.log(e)
+      })
   }
 }
