@@ -1,21 +1,21 @@
-require('dotenv').config();
+require('dotenv').config()
 
 module.exports = {
-	/**
+  /**
    * Tipologie di utenti
    */
-	rules: {
-		everyone: '@everyone',
-		Admin: 'Admin',
-		Moderatore: 'Moderatore',
-		Collaboratore: 'Collaboratore',
-	},
-	/**
+  rules: {
+    everyone: '@everyone',
+    Admin: 'Admin',
+    Moderatore: 'Moderatore',
+    Collaboratore: 'Collaboratore',
+  },
+  /**
    * Tipologia di task
    */
-	taskType: {
-		AddReaction: 'AddReaction',
-		RemoveReaction: 'RemoveReaction',
-		AddMessage: 'AddMessage',
-	},
-};
+  taskType: {
+    AddReaction: 'AddReaction',
+    RemoveReaction: 'RemoveReaction',
+    AddMessage: 'AddMessage',
+  },
+}
