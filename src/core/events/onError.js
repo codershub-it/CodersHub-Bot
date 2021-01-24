@@ -1,7 +1,7 @@
 function init(client) {
-	client.on('error', (err) => {
-		console.log(err);
-	});
+  client.on('error', (err) => {
+    console.log(err)
+  })
 }
 
-module.exports = { init };
+module.exports = { init }
