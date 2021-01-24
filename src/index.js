@@ -67,7 +67,7 @@ module.exports = class Bot {
 			ping: new Ping(this.client),
 			// test: new TestList(this.client),
 			code: new Code(this.client),
-			hint: new Hint(this.client)
+			hint: new Hint(this.client),
 		};
 	}
 
