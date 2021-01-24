@@ -29,7 +29,7 @@
     "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
     "no-trailing-spaces": ["error"],
     "no-var": "error",
-    "no-unused-vars": "off",
+    "no-unused-vars": "error",
     "object-curly-spacing": ["error", "always"],
     "prefer-const": "error",
     "space-before-blocks": "error",
