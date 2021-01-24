@@ -54,6 +54,7 @@ module.exports = class Bot {
 		const TestList = require('./commands/test_list');
 		const Code = require('./commands/code');
 		const Caffe = require('./commands/caffe');
+		const Hint = require('./commands/hint');
 
 		return {
 			caffè: new Caffe(this.client),
@@ -66,6 +67,7 @@ module.exports = class Bot {
 			ping: new Ping(this.client),
 			// test: new TestList(this.client),
 			code: new Code(this.client),
+			hint: new Hint(this.client)
 		};
 	}
 
