@@ -4,8 +4,8 @@ Grazie per essere disposto a contribuire al progetto!
 
 # Richiesto:
 
-Nodejs > 12.x
-MongoDB
+- Nodejs > 12.x
+- MongoDB
 
 # Configurazione:
 
