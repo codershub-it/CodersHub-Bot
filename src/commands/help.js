@@ -57,9 +57,9 @@ module.exports = class help extends Commands {
     emb.setTitle('Bot ufficiale di CodersHub')
     let str_msg = ''
     if (!nomeComando) {
-      str_msg += `**Ciao <@${message.author.id}>** ecco la lista dei comandi:\n`
+      str_msg += `Ecco la lista dei comandi:\n`
     } else {
-      str_msg += `**Ciao <@${message.author.id}>** ecco il dettaglio del comando\n`
+      str_msg += `Ecco il dettaglio del comando\n`
     }
     str_msg += msg
     if (msg.length > 0) {
@@ -73,7 +73,7 @@ module.exports = class help extends Commands {
     emb.setThumbnail('https://media1.tenor.com/images/0edd53dd2110147b786329c2e24fb1d0/tenor.gif')
     bot.channels.cache
       .find((channel) => channel.name === 'comandi-bot')
-      .send(emb)
+      .send(`**Ciao <@${message.author.id}>** hai attivato il comando ${bot.conf.prefix}help`, emb)
       .catch((e) => {
         console.log(e)
       })
