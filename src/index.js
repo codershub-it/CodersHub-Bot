@@ -50,6 +50,7 @@ module.exports = class Bot {
     const Code = require('./commands/code')
     const Caffe = require('./commands/caffe')
     const Hint = require('./commands/hint')
+    const Poll = require('./commands/poll')
 
     return {
       caffè: new Caffe(this.client),
@@ -63,6 +64,7 @@ module.exports = class Bot {
       // test: new TestList(this.client),
       code: new Code(this.client),
       hint: new Hint(this.client),
+      poll: new Poll(this.client),
     }
   }
 

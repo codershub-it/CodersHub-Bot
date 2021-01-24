@@ -16,7 +16,7 @@ module.exports = class Code extends Commands {
     this.displayHelp = 1
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const id_author = message.author.id
     let code = message.args
     let lang = ''
