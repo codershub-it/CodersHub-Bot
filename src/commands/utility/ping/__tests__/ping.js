@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const { makeFakeClient } = require('discord-client')
-const Ping = require('commands/ping')
+const Ping = require('commands/utility/ping/ping')
 
 async function setup() {
   const { client, bot, defaultChannels } = await makeFakeClient()

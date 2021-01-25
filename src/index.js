@@ -41,19 +41,19 @@ module.exports = class Bot {
 
   loadCommands() {
     const Help = require('./commands/help')
-    const Ban = require('./commands/ban')
-    const Kick = require('./commands/kick')
-    const Embed = require('./commands/embed')
-    const Fatman = require('./commands/fatman')
-    const EmbedExample = require('./commands/embed_example')
-    const Ping = require('./commands/ping')
-    const Code = require('./commands/code')
-    const Caffe = require('./commands/caffe')
-    const Hint = require('./commands/hint')
-    const Poll = require('./commands/poll')
+    const Ban = require('./commands/moderation/ban/ban')
+    const Kick = require('./commands/moderation/kick/kick')
+    const Embed = require('./commands/utility/embed/embed')
+    const Fatman = require('./commands/utility/fatman/fatman')
+    const EmbedExample = require('./commands/utility/embed/embed_example')
+    const Ping = require('./commands/utility/ping/ping')
+    const Code = require('./commands/utility/code/code')
+    const Coffee = require('./commands/fun/coffee/coffee')
+    const Hint = require('./commands/utility/hint/hint')
+    const Poll = require('./commands/utility/poll/poll')
 
     return {
-      caffè: new Caffe(this.client),
+      coffee: new Coffee(this.client),
       ban: new Ban(this.client),
       kick: new Kick(this.client),
       embed: new Embed(this.client),

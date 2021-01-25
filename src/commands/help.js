@@ -64,6 +64,9 @@ module.exports = class help extends Commands {
     }
     emb.setColor('RANDOM')
     emb.setThumbnail('https://media1.tenor.com/images/0edd53dd2110147b786329c2e24fb1d0/tenor.gif')
+    emb.setFooter(
+      `Se hai delle idee o hai un suggerimento per migliorare il gruppo o il bot, invia la tua proposta con il comando ${bot.conf.prefix}proposta`,
+    )
     bot.channels.cache
       .find((channel) => channel.name === 'comandi-bot')
       .send(`**Ciao <@${message.author.id}>** hai attivato il comando ${bot.conf.prefix}help`, emb)

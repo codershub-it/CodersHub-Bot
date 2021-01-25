@@ -1,4 +1,4 @@
-const Commands = require('../core/command')
+const Commands = require('../../../core/command')
 
 module.exports = class Hint extends Commands {
   constructor(client) {
@@ -30,9 +30,11 @@ module.exports = class Hint extends Commands {
       emb.setDescription(args)
       emb.setColor('RANDOM')
       emb.setTimestamp()
-      const messageToSend = await hintChannel.send(emb).catch((e) => {
-        console.log(e)
-      })
+      const messageToSend = await hintChannel
+        .send(`@everyone è arrivata una nuova proposta!`, emb)
+        .catch((e) => {
+          console.log(e)
+        })
       await messageToSend.react('👍')
       await messageToSend.react('👎')
       await message.delete()

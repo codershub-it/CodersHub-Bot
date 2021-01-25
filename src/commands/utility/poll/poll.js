@@ -1,5 +1,5 @@
-const Commands = require('../core/command')
-const numberToEmoji = require('../core/utility/numberToEmoji')
+const Commands = require('../../../core/command')
+const numberToEmoji = require('../../../core/utility/numberToEmoji')
 
 module.exports = class Poll extends Commands {
   constructor(client) {

@@ -1,4 +1,4 @@
-const Commands = require('../core/command')
+const Commands = require('../../../core/command')
 
 module.exports = class EmbedExemple extends Commands {
   constructor(client) {

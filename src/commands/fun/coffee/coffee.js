@@ -1,6 +1,6 @@
-const Commands = require('../core/command')
+const Commands = require('../../../core/command')
 
-module.exports = class Caffe extends Commands {
+module.exports = class Coffee extends Commands {
   constructor(client) {
     super(client)
     this.cmd = 'caffè'
