@@ -2,6 +2,7 @@ const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
 const onReaction = require('./core/events/onReaction')
 const settings = require('./core/settings')
+const mongo = require('./core/mongo')
 const Discord = require('discord.js')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
@@ -32,7 +33,7 @@ module.exports = class Bot {
         // Load Command
         client._botCommands = this.loadCommands()
         // Avvio il core del bot
-        this.loadCore().catch((e) => {
+        this.loadCore(client).catch((e) => {
           console.log(e)
         })
       }
@@ -51,6 +52,12 @@ module.exports = class Bot {
     const Coffee = require('./commands/fun/coffee/coffee')
     const Hint = require('./commands/utility/hint/hint')
     const Poll = require('./commands/utility/poll/poll')
+    // Note module
+    const AddNote = require('./commands/note/addNote/addNote')
+    // const DelNote = require('./commands/note/delNote/delNote')
+    // const EditNote = require('./commands/note/editNote/editNote')
+    // const GetNote = require('./commands/note/getNote/getNote')
+    // const ListAppNote = require('./commands/note/listApproveNote/listApproveNote')
 
     return {
       coffee: new Coffee(this.client),
@@ -65,11 +72,17 @@ module.exports = class Bot {
       code: new Code(this.client),
       hint: new Hint(this.client),
       poll: new Poll(this.client),
+      addnote: new AddNote(this.client),
+      // delnote: new DelNote(this.client),
+      // editnote: new EditNote(this.client),
+      // getnote: new GetNote(this.client),
+      // listappnote: new ListAppNote(this.client),
     }
   }
 
-  async loadCore() {
-    // await mongo.init();
+  async loadCore(client) {
+    await mongo.init()
+    client._botMongo = mongo
     onError.init(this.client)
     onMessage.init(this.client)
     onReaction.init(this.client)
