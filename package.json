@@ -9,7 +9,7 @@
     "fix": "npm run pretty; npm run lint",
     "lint": "eslint src/** --fix",
     "pretty": "prettier --write .",
-    "test": "jest --watch"
+    "test": "jest --watch --detectOpenHandles"
   },
   "husky": {
     "hooks": {

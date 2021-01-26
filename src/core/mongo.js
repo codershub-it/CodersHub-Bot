@@ -1,6 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
-const Note = require('./model/note')
+
 class Mongo {
   constructor(
     options = {
@@ -20,11 +20,6 @@ class Mongo {
     this.db = await this.mongoose.connection
     this.db.on('error', console.error.bind(console, 'connection error:'))
     console.log('🚀 Connected a Mongo 👊🏻')
-    /**
-     *
-     * @type {Note}
-     */
-    this.note = new Note(this.mongoose)
   }
 }
 module.exports = new Mongo()
