@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const NoteModel = require('../note')
+const noteModel = require('../note')
 const MongoURI = require('../../../../globalConfig.json')
 const noteData = {
   guild_id: '12345',
@@ -26,27 +26,28 @@ describe('User Model Test', () => {
   })
 
   it('create & save note successfully', async () => {
-    const validNote = new NoteModel(noteData)
+    const validNote = new noteModel(noteData)
     const savedNote = await validNote.save()
     expect(savedNote._id).toBeDefined()
     expect(savedNote.guild_id).toBe(noteData.guild_id)
   })
 
   it('insert user successfully, but the field does not defined in schema should be undefined', async () => {
-    const noteWithInvalidField = new NoteModel({
+    const noteWithInvalidField = new noteModel({
       guild_id: '12345',
       channel_id: '12345',
       message_id: '12345',
       author_id: '12345',
+      note: 'questa è una nota',
       nickname: 'elemento non necessario...',
     })
     const saveNoteWithInvalidField = await noteWithInvalidField.save()
     expect(saveNoteWithInvalidField._id).toBeDefined()
-    expect(saveNoteWithInvalidField.nickkname).toBeUndefined()
+    expect(saveNoteWithInvalidField.nickname).toBeUndefined()
   })
 
   it('create user without required field should failed', async () => {
-    const noteWithoutRequiredField = new NoteModel({ guild_id: '1234' })
+    const noteWithoutRequiredField = new noteModel({ guild_id: '1234' })
     let err
     try {
       await noteWithoutRequiredField.save()

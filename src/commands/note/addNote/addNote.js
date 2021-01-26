@@ -14,6 +14,7 @@ module.exports = class AddNote extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
+    this.modelNote = require('../../../core/model/note')
   }
 
   async execution(message) {
@@ -39,24 +40,22 @@ module.exports = class AddNote extends Commands {
       return
     }
 
-    const mongo = require('../../../core/mongo')
-    await mongo.note
-      .saveNote(
-        message.reference.guildID,
-        message.reference.channelID,
-        message.reference.messageID,
-        message.author.id,
-        args,
-        true,
-      )
-      .then((r) => {
-        console.log(r)
-        message.delete()
-        message.reply(' nota aggiunta con successo!')
-      })
-      .catch((e) => {
-        console.log(e)
-        message.reply(' purtroppo non è stato possibile aggiungere la nota..')
-      })
+    const obData = {
+      guild_id: message.reference.guildID,
+      channel_id: message.reference.channelID,
+      message_id: message.reference.messageID,
+      author_id: message.author.id,
+      note: args,
+      nickname: true,
+    }
+
+    try {
+      const newModel = this.modelNote(obData)
+      const resp = await newModel.save()
+      message.reply(` nota aggiunta con successo! ID: ${resp._id}`)
+    } catch (e) {
+      console.log(e)
+      message.reply(' purtroppo non è stato possibile aggiungere la nota..')
+    }
   }
 }

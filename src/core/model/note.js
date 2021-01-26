@@ -11,7 +11,6 @@ const noteSchema = new mongoose.Schema({
   date_modified: { type: Date, default: Date.now },
   status: Boolean,
 })
-
-const noteModel = new mongoose.model('Notes', noteSchema)
-
+const titleFolder = 'Notes'
+const noteModel = new mongoose.model(titleFolder, noteSchema)
 module.exports = noteModel

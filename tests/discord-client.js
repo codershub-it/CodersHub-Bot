@@ -26,6 +26,7 @@ async function makeFakeClient() {
     _botSettings: settings,
     _botFetch: fetch,
     _botMessageEmbed: MessageEmbed,
+    conf: { prefix: '&' },
   })
   const guild = new Discord.Guild(client, {
     id: SnowflakeUtil.generate(),
