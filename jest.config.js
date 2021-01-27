@@ -1,5 +1,5 @@
 const jestConfig = {
-  roots: ['src'],
+  roots: ['src', 'tests'],
   testEnvironment: 'node',
   moduleFileExtensions: ['js'],
   moduleDirectories: ['node_modules', 'src', 'tests'],

@@ -2,23 +2,24 @@ const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
 const onReaction = require('./core/events/onReaction')
 const settings = require('./core/settings')
-const Discord = require('discord.js')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
-require('dotenv').config()
 
 module.exports = class Bot {
-  constructor() {
-    const client = new Discord.Client()
-    client.login(process.env.TOKEN_BOT).catch((e) => {
-      console.log(e)
-    })
+  constructor(client) {
     client._botSettings = settings
     client._botFetch = fetch
     client._botMessageEmbed = MessageEmbed
     client.conf = {
       prefix: process.env.PREFIX,
     }
+    this.client = client
+    // Load Command
+    client._botCommands = this.loadCommands()
+    // Avvio il core del bot
+    this.loadCore().catch((e) => {
+      console.log(e)
+    })
     client.on('ready', (error) => {
       if (error) {
         console.log(error, 'Errore di avvio BOT')
@@ -26,13 +27,6 @@ module.exports = class Bot {
       } else {
         console.log('Bot online per chiudere CONT + C')
         client.user.setActivity(`${process.env.PREFIX}help per maggiori dettagli`).catch((e) => {
-          console.log(e)
-        })
-        this.client = client
-        // Load Command
-        client._botCommands = this.loadCommands()
-        // Avvio il core del bot
-        this.loadCore().catch((e) => {
           console.log(e)
         })
       }
