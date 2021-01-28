@@ -1,10 +1,10 @@
 const Commands = require('../../../core/command')
 
-module.exports = class AddNote extends Commands {
+module.exports = class Note extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'addNote'
-    this.alias = 'addnote'
+    this.cmd = 'Note'
+    this.alias = 'note'
     this.args = 'inserisci la nota (Massimo 60 caratteri)'
     this.example = `${client.conf.prefix}addNote Qui si parla di Angular e delle sue problematiche`
     this.description =

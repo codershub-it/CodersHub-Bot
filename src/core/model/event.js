@@ -6,9 +6,7 @@ const eventsSchema = new mongoose.Schema({
   date_added: { type: Date, default: Date.now },
   date_deleted: { type: Date, default: Date.now },
 })
-
 const titleFolder = 'Events'
-
 const eventsModel = mongoose.model(titleFolder, eventsSchema)
 
 // const addEvent = () => {}

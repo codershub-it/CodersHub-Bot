@@ -6,9 +6,10 @@ module.exports = class GetNotesModeration extends Commands {
     super(client)
     this.cmd = 'NotesMod'
     this.alias = 'notesmod'
-    this.args = '[inserisci lid della nota da attivare]'
+    this.args = "[inserisci l'id della nota da attivare]"
     this.example = `${client.conf.prefix} 3057392487254763492347029`
-    this.description = "Questo comando serve a gestire l' attivazione delle note degli utenti"
+    this.description =
+      'Questo comando serve a gestire la moderazione delle note inserite dagli utenti del gruppo'
     this.timer = 0
     this.access = [
       client._botSettings.rules.Admin,
@@ -37,7 +38,6 @@ module.exports = class GetNotesModeration extends Commands {
       }
       return
     }
-
     // Mostro la lista
     let notes = []
     notes = await this.modelNote.find({}).where('status', false)
@@ -104,17 +104,17 @@ module.exports = class GetNotesModeration extends Commands {
    */
   generateQueueEmbed(queue, client) {
     const embeds = []
-    let k = 10
-    for (let i = 0; i < queue.length; i += 10) {
+    let k = 5
+    for (let i = 0; i < queue.length; i += 5) {
       const current = queue.slice(i, k)
       let j = i
-      k += 10
+      k += 5
       const line = current
         .map(
           (track) =>
-            `**${++j}** [CHAN: <#${track.channel_id}>]
-                        [ID: ${track._id}]
-                        [NOTE: ${track.note}](${this.makeStringUrl(
+            `**${++j}** [Chan: <#${track.channel_id}>]
+                        [Id: ${track._id}]
+                        [Note: ${track.note}](${this.makeStringUrl(
               track.guild_id,
               track.channel_id,
               track.message_id,
@@ -124,9 +124,9 @@ module.exports = class GetNotesModeration extends Commands {
         .join('\n')
       const embed = new client._botMessageEmbed()
         .setDescription(
-          `** 🗒 Lista Note 🗒 ${numberToEmoji.toEmoji(queue.length)} Elementi **\n${line}`,
+          `**🗒 Elementi da verificare: ${numberToEmoji.toEmoji(queue.length)}**\n${line}`,
         )
-        .setFooter('Premi il simbolo ❌  per eliminare questo messaggio')
+        .setFooter('Premi il simbolo ❌ per eliminare questo messaggio')
         .setColor('RANDOM')
       embeds.push(embed)
     }

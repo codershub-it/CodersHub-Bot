@@ -1,13 +1,13 @@
 const Commands = require('../../../core/command')
 const numberToEmoji = require('../../../core/utility/numberToEmoji')
 
-module.exports = class GetNotes extends Commands {
+module.exports = class Notes extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'getNotes'
-    this.alias = 'getnotes'
+    this.cmd = 'Notes'
+    this.alias = 'notes'
     this.args = 'Puoi scrivere dopo lo spazio la chiave di ricerca'
-    this.example = `${client.conf.prefix}getNotes Angular`
+    this.example = `${client.conf.prefix}Notes Angular`
     this.description =
       'Questo comando mostra tutte le note presenti in un canale mostrando un lista dinamica.' +
       'Indicando una id_nota aprirà il dettaglio di quella nota specifica'
@@ -116,18 +116,19 @@ module.exports = class GetNotes extends Commands {
       const line = current
         .map(
           (track) =>
-            `**${++j}** [<#${track.channel_id}>][${this.highlightValueInString(
-              track.note,
-              args,
-            )}](${this.makeStringUrl(track.guild_id, track.channel_id, track.message_id)})`,
+            `**${++j}** - [${this.highlightValueInString(track.note, args)}](${this.makeStringUrl(
+              track.guild_id,
+              track.channel_id,
+              track.message_id,
+            )})`,
         )
         .join('\n')
       if (args) {
         const embed = new client._botMessageEmbed()
           .setDescription(
-            `** 🗒 Lista Note 🗒 ${numberToEmoji.toEmoji(
+            `** 🗒 Lista Note trovate ${numberToEmoji.toEmoji(
               queue.length,
-            )} Elementi - Chiave di ricerca: ${args}**\n${line} `,
+            )} elementi con chiave di ricerca: ${args}**\n${line} `,
           )
           .setFooter('Premi il simbolo ❌ per eliminare questo messaggio')
           .setColor('RANDOM')
@@ -135,7 +136,7 @@ module.exports = class GetNotes extends Commands {
       } else {
         const embed = new client._botMessageEmbed()
           .setDescription(
-            `** 🗒 Lista Note 🗒 ${numberToEmoji.toEmoji(queue.length)} Elementi **\n${line}`,
+            `** 🗒 Lista Note trovate ${numberToEmoji.toEmoji(queue.length)} elementi **\n${line}`,
           )
           .setFooter('Premi il simbolo ❌  per eliminare questo messaggio')
           .setColor('RANDOM')

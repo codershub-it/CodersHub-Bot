@@ -49,9 +49,9 @@ module.exports = class Bot {
     const Hint = require('./commands/utility/hint/hint')
     const Poll = require('./commands/utility/poll/poll')
     const Demo = require('./commands/test/demo')
-    const AddNote = require('./commands/note/addNote/addNote')
+    const Note = require('./commands/note/note/Note')
+    const Notes = require('./commands/note/notes/Notes')
     const DelNote = require('./commands/note/delNote/delNote')
-    const GetNote = require('./commands/note/getNotes/getNotes')
     const GetNotesModeration = require('./commands/note/getNotesModeration/getNotesModeration')
 
     return {
@@ -67,9 +67,9 @@ module.exports = class Bot {
       hint: new Hint(this.client),
       poll: new Poll(this.client),
       demo: new Demo(this.client),
-      add_note: new AddNote(this.client, noteModel),
+      note: new Note(this.client, noteModel),
+      notes: new Notes(this.client, noteModel),
       del_note: new DelNote(this.client, noteModel),
-      get_notes: new GetNote(this.client, noteModel),
       get_notes_moderation: new GetNotesModeration(this.client, noteModel),
     }
   }

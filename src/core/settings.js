@@ -22,7 +22,7 @@ module.exports = {
    * Canali fissi per il bot
    */
   channel: {
-    suggerimenti_id: '802929607039909898',
-    comandi_bot_id: '802951431455637524',
+    suggerimenti_id: process.env.SUGGERIMENTI_CANALE,
+    comandi_bot_id: process.env.COMANDI_BOT_CANALE,
   },
 }
