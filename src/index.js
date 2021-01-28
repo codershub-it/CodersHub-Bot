@@ -47,6 +47,7 @@ module.exports = class Bot {
     const Coffee = require('./commands/fun/coffee/coffee')
     const Hint = require('./commands/utility/hint/hint')
     const Poll = require('./commands/utility/poll/poll')
+    const Demo = require('./commands/test/demo')
 
     return {
       coffee: new Coffee(this.client),
@@ -57,10 +58,10 @@ module.exports = class Bot {
       embed_example: new EmbedExample(this.client),
       help: new Help(this.client),
       ping: new Ping(this.client),
-      // test: new TestList(this.client),
       code: new Code(this.client),
       hint: new Hint(this.client),
       poll: new Poll(this.client),
+      demo: new Demo(this.client),
     }
   }
 
