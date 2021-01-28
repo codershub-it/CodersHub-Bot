@@ -14,6 +14,13 @@ module.exports = class Bot {
     client.conf = {
       prefix: process.env.PREFIX,
     }
+    this.client = client
+    // Load Command
+    client._botCommands = this.loadCommands()
+    // Avvio il core del bot
+    this.loadCore(client).catch((e) => {
+      console.log(e)
+    })
     client.on('ready', (error) => {
       if (error) {
         console.log(error, 'Errore di avvio BOT')
@@ -21,13 +28,6 @@ module.exports = class Bot {
       } else {
         console.log('Bot online per chiudere CONT + C')
         client.user.setActivity(`${process.env.PREFIX}help per maggiori dettagli`).catch((e) => {
-          console.log(e)
-        })
-        this.client = client
-        // Load Command
-        client._botCommands = this.loadCommands()
-        // Avvio il core del bot
-        this.loadCore(client).catch((e) => {
           console.log(e)
         })
       }
