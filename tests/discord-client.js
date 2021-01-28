@@ -88,6 +88,7 @@ async function makeFakeClient() {
     bot: client.user,
     js: jsUser,
     defaultChannels,
+    createUser,
   }
 }
 
