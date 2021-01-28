@@ -1,5 +1,5 @@
 const { rest } = require('msw')
-const { SnowflakeUtil } = require('discord.js')
+const { SnowflakeUtil, Util } = require('discord.js')
 const DiscordManager = require('../../DiscordManager')
 
 const handlers = [
@@ -19,9 +19,16 @@ const handlers = [
     const channel = DiscordManager.channels[req.params.channelId]
     const guild = DiscordManager.guilds[channel.guild_id]
     const members = Array.from(guild.members.cache.values())
-    const mentions = Array.from(req.body.content.matchAll(/<@!(?<userId>\d+)>/g)).map(
-      (mention) => members.find((user) => user.id === mention.groups.userId).user,
-    )
+    let mentions = []
+    if ('embed' in req.body) {
+      mentions = Array.from(req.body.embed.description.matchAll(/<@!(?<userId>\d+)>/g)).map(
+        (mention) => members.find((user) => user.id === mention.groups.userId).user,
+      )
+    } else {
+      mentions = Array.from(req.body.content.matchAll(/<@!(?<userId>\d+)>/g)).map(
+        (mention) => members.find((user) => user.id === mention.groups.userId).user,
+      )
+    }
     const message = {
       id: SnowflakeUtil.generate(),
       channel_id: channel.id,
@@ -44,6 +51,42 @@ const handlers = [
 
     return res(ctx.status(200), ctx.json(editedMessage))
   }),
+  rest.delete('*/api/:apiVersion/channels/:channelId/messages/:messageId', (req, res, ctx) => {
+    const channel = DiscordManager.channels[req.params.channelId]
+    const deletedMessage = {
+      id: req.params.messageId,
+      channel_id: req.params.channelId,
+    }
+    DiscordManager.guilds[channel.guild_id].client.actions.MessageDelete.handle(deletedMessage)
+    return res(ctx.status(200), ctx.json(deletedMessage))
+  }),
+  rest.put(
+    `*/api/:apiVersion/channels/:channelId/messages/:messageId/reactions/:reaction/@me`,
+    (req, res, ctx) => {
+      const cachedChannel = DiscordManager.channels[req.params.channelId]
+
+      const discordChannel = Array.from(
+        DiscordManager.guilds[cachedChannel.guild_id].channels.cache.values(),
+      ).find((channel) => channel.id === cachedChannel.id)
+
+      const messageToUpdate = Array.from(discordChannel.messages.cache.values()).find(
+        (message) => message.id === req.params.messageId,
+      )
+      const { name } = Util.parseEmoji(req.params.reaction)
+      const emoji = Array.from(
+        DiscordManager.guilds[cachedChannel.guild_id].emojis.cache.values(),
+      ).find((guildEmoji) => guildEmoji.name === name)
+      let count = 1
+      if (messageToUpdate.reactions.cache.has(emoji.id)) {
+        count = messageToUpdate.reactions.cache.get(emoji.id).count
+      }
+      messageToUpdate.reactions.cache.set(emoji.id, {
+        count,
+        emoji,
+      })
+      return res(ctx.status(204), ctx.json({}))
+    },
+  ),
 ]
 
 module.exports = handlers

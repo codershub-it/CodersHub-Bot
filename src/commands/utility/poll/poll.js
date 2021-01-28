@@ -24,12 +24,12 @@ module.exports = class Poll extends Commands {
   async execution(message, bot) {
     const arg = message.args.match(/"(.*?)"/g)
     if (!arg) {
-      message.reply(' devi scrivere almeno una domanda e delle risposte tra doppie virgolette')
+      message.reply('devi scrivere almeno una domanda e delle risposte tra doppie virgolette')
       return
     }
     const question_string = arg[0].replace(/"/g, '')
     if (question_string.length < 20) {
-      message.reply(' devi scrivere almeno una domanda da 20 caratteri')
+      message.reply('devi scrivere almeno una domanda da 20 caratteri')
       return
     }
     // Elimino il primo array che è la domanda
@@ -51,7 +51,10 @@ module.exports = class Poll extends Commands {
         await message.delete()
       } else {
         const emb = new bot._botMessageEmbed()
-        const msg = `-- **Domanda proposta da <@${message.author.id}>** --\n${question_string}\n`
+        const msg = `
+-- **Domanda proposta da <@${message.author.id}>** --
+${question_string}
+`.trim()
         emb.setDescription(msg)
         emb.setColor('RANDOM')
         emb.setTimestamp()
