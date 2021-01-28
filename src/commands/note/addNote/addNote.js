@@ -1,7 +1,7 @@
 const Commands = require('../../../core/command')
 
 module.exports = class AddNote extends Commands {
-  constructor(client, noteModel) {
+  constructor(client, note) {
     super(client)
     this.cmd = 'addNote'
     this.alias = 'addnote'
@@ -14,7 +14,7 @@ module.exports = class AddNote extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
-    this.modelNote = noteModel
+    this.modelNote = note
   }
 
   async execution(message, bot) {

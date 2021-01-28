@@ -1,60 +1,56 @@
 const Commands = require('../../../core/command')
 const numberToEmoji = require('../../../core/utility/numberToEmoji')
 
-module.exports = class GetNotes extends Commands {
+module.exports = class GetNotesModeration extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'getNotes'
-    this.alias = 'getnotes'
-    this.args = 'Puoi scrivere dopo lo spazio la chiave di ricerca'
-    this.example = `${client.conf.prefix}getNotes Angular`
-    this.description =
-      'Questo comando mostra tutte le note presenti in un canale mostrando un lista dinamica.' +
-      'Indicando una id_nota aprirà il dettaglio di quella nota specifica'
+    this.cmd = 'NotesMod'
+    this.alias = 'notesmod'
+    this.args = '[inserisci lid della nota da attivare]'
+    this.example = `${client.conf.prefix} 3057392487254763492347029`
+    this.description = "Questo comando serve a gestire l' attivazione delle note degli utenti"
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = [
+      client._botSettings.rules.Admin,
+      client._botSettings.rules.Moderatore,
+      client._botSettings.rules.Collaboratore,
+    ]
     this.displayHelp = 1
     this.modelNote = note
   }
 
   async execution(message, bot) {
-    let notes = []
+    // Abilito un id specifico
     if (message.args) {
-      // Estrae i dati con il motore di recerca
-      notes = await this.modelNote.find({
-        $and: [
-          { note: new RegExp(message.args, 'i') },
-          { status: true },
-          { channel_id: message.channel.id },
-        ],
-      })
-      // Se non trova nulla...
-      if (notes.length == 0) {
+      const noteID = message.args
+      try {
+        await this.modelNote.findByIdAndUpdate(noteID, { status: true })
         const embed = new bot._botMessageEmbed()
-        embed.setTitle('404')
-        embed.setDescription(
-          `Purtroppo non ho trovato nulla con la chiave di ricerca: ${message.args}`,
-        )
+        embed.setDescription(`Abilitato con successo`)
         embed.setColor('RANDOM')
         message.reply(embed)
-        return
-      }
-    } else {
-      notes = await this.modelNote.find({
-        $and: [{ status: true }, { channel_id: message.channel.id }],
-      })
-      // Se non trova nulla...
-      if (notes.length == 0) {
+      } catch (e) {
         const embed = new bot._botMessageEmbed()
-        embed.setDescription(`Purtroppo non ci sono note salvate`)
+        embed.setDescription(`Abilitazione non riuscita`)
         embed.setColor('RANDOM')
         message.reply(embed)
-        return
       }
+      return
     }
 
+    // Mostro la lista
+    let notes = []
+    notes = await this.modelNote.find({}).where('status', false)
+    // Se non trova nulla...
+    if (notes.length == 0) {
+      const embed = new bot._botMessageEmbed()
+      embed.setDescription(`Non ci sono note da gestire.`)
+      embed.setColor('RANDOM')
+      message.reply(embed)
+      return
+    }
     // Creo l'embeds
-    const embeds = this.generateQueueEmbed(notes, bot, message.args)
+    const embeds = this.generateQueueEmbed(notes, bot)
     let currentPage = 0
     const queueEmbed = await message.channel.send(
       `Current Page: ${currentPage + 1}/${embeds.length}`,
@@ -106,7 +102,7 @@ module.exports = class GetNotes extends Commands {
    * @param args
    * @returns {[]}
    */
-  generateQueueEmbed(queue, client, args) {
+  generateQueueEmbed(queue, client) {
     const embeds = []
     let k = 10
     for (let i = 0; i < queue.length; i += 10) {
@@ -116,31 +112,23 @@ module.exports = class GetNotes extends Commands {
       const line = current
         .map(
           (track) =>
-            `**${++j}** [<#${track.channel_id}>][${this.highlightValueInString(
-              track.note,
-              args,
-            )}](${this.makeStringUrl(track.guild_id, track.channel_id, track.message_id)})`,
+            `**${++j}** [CHAN: <#${track.channel_id}>]
+                        [ID: ${track._id}]
+                        [NOTE: ${track.note}](${this.makeStringUrl(
+              track.guild_id,
+              track.channel_id,
+              track.message_id,
+            )})
+                        ------`,
         )
         .join('\n')
-      if (args) {
-        const embed = new client._botMessageEmbed()
-          .setDescription(
-            `** 🗒 Lista Note 🗒 ${numberToEmoji.toEmoji(
-              queue.length,
-            )} Elementi - Chiave di ricerca: ${args}**\n${line} `,
-          )
-          .setFooter('Premi il simbolo ❌ per eliminare questo messaggio')
-          .setColor('RANDOM')
-        embeds.push(embed)
-      } else {
-        const embed = new client._botMessageEmbed()
-          .setDescription(
-            `** 🗒 Lista Note 🗒 ${numberToEmoji.toEmoji(queue.length)} Elementi **\n${line}`,
-          )
-          .setFooter('Premi il simbolo ❌  per eliminare questo messaggio')
-          .setColor('RANDOM')
-        embeds.push(embed)
-      }
+      const embed = new client._botMessageEmbed()
+        .setDescription(
+          `** 🗒 Lista Note 🗒 ${numberToEmoji.toEmoji(queue.length)} Elementi **\n${line}`,
+        )
+        .setFooter('Premi il simbolo ❌  per eliminare questo messaggio')
+        .setColor('RANDOM')
+      embeds.push(embed)
     }
     return embeds
   }

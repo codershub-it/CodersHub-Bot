@@ -1,7 +1,7 @@
 const Commands = require('../../../core/command')
 
 module.exports = class DelNote extends Commands {
-  constructor(client) {
+  constructor(client, note) {
     super(client)
     this.cmd = 'delNote'
     this.alias = 'delnote'
@@ -15,7 +15,7 @@ module.exports = class DelNote extends Commands {
       client._botSettings.rules.Collaboratore,
     ]
     this.displayHelp = 1
-    this.modelNote = require('../../../core/model/note')
+    this.modelNote = note
   }
 
   async execution(message) {

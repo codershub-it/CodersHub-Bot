@@ -4,6 +4,7 @@ const onReaction = require('./core/events/onReaction')
 const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
+const noteModel = require('./core/model/note')
 
 module.exports = class Bot {
   constructor(client, mongo) {
@@ -48,6 +49,10 @@ module.exports = class Bot {
     const Hint = require('./commands/utility/hint/hint')
     const Poll = require('./commands/utility/poll/poll')
     const Demo = require('./commands/test/demo')
+    const AddNote = require('./commands/note/addNote/addNote')
+    const DelNote = require('./commands/note/delNote/delNote')
+    const GetNote = require('./commands/note/getNotes/getNotes')
+    const GetNotesModeration = require('./commands/note/getNotesModeration/getNotesModeration')
 
     return {
       coffee: new Coffee(this.client),
@@ -62,6 +67,10 @@ module.exports = class Bot {
       hint: new Hint(this.client),
       poll: new Poll(this.client),
       demo: new Demo(this.client),
+      add_note: new AddNote(this.client, noteModel),
+      del_note: new DelNote(this.client, noteModel),
+      get_notes: new GetNote(this.client, noteModel),
+      get_notes_moderation: new GetNotesModeration(this.client, noteModel),
     }
   }
 
