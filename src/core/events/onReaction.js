@@ -26,6 +26,18 @@ function reactionAdd(client) {
   })
 }
 
+// /**
+//  * Add Karma point!
+//  * @param client
+//  */
+// function checkKarmaStar(client) {
+//   client.on('messageReactionAdd', (reaction, user) => {
+//     if (reaction.emoji.name === '⭐') {
+//       client._botCommands['karma'].eventAddReaction(reaction, user)
+//     }
+//   })
+// }
+
 /**
  * Init
  * @param client
@@ -33,6 +45,7 @@ function reactionAdd(client) {
 function init(client) {
   reactionAdd(client)
   reactionRemove(client)
+  // checkKarmaStar(client)
 }
 
 module.exports = { init }
