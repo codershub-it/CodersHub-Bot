@@ -18,18 +18,12 @@ module.exports = class Code extends Commands {
 
   async execution(message) {
     const id_author = message.author.id
-    let code = message.args
-    let lang = ''
 
-    // Riferimento di lingua tra [linguaggio]
-    if (code.indexOf('[', 0) == 0 && code.indexOf(']', 0) > 0) {
-      console.log(code.indexOf('[', 0), '[')
-      console.log(code.indexOf(']', 0), ']')
-      lang = code.substring(code.indexOf('[', 0) + 1, code.indexOf(']', 0))
-      const langLast = code.indexOf(']', 0)
-      // Elimino la parte lang [linguaggio]
-      code = code.substr(langLast + 1)
-    }
+    // Estrapolo gli elementi tra []
+    const estract_obj = this.estractFromSquareBrackets(message.args)
+    let code = estract_obj.txt
+    const lang = estract_obj.squareValue
+
     // Escape del carattere ` con §
     code = code.replace(/`/g, '§')
 

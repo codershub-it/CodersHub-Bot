@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 // Create a simple User's schema
 const noteSchema = new mongoose.Schema({
   guild_id: { type: String, required: true },
@@ -9,8 +8,8 @@ const noteSchema = new mongoose.Schema({
   note: String,
   date_added: { type: Date, default: Date.now },
   date_modified: { type: Date, default: Date.now },
-  status: Boolean,
+  status: { type: Boolean, default: true, required: true },
 })
 const titleFolder = 'Notes'
-const noteModel = new mongoose.model(titleFolder, noteSchema)
+const noteModel = mongoose.model(titleFolder, noteSchema)
 module.exports = noteModel

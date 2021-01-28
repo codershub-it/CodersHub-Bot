@@ -17,7 +17,7 @@ module.exports = class Hint extends Commands {
   async execution(message, bot) {
     const args = message.args
     const hintChannel = this.client.channels.cache.find(
-      (channel) => channel.name === 'suggerimenti',
+      (channel) => channel.id === bot._botSettings.channel.suggerimenti_id,
     )
     if (args.length > 20) {
       const emb = new bot._botMessageEmbed()

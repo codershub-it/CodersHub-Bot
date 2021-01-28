@@ -1,11 +1,11 @@
 const Commands = require('../../../core/command')
 
 module.exports = class AddNote extends Commands {
-  constructor(client) {
+  constructor(client, noteModel) {
     super(client)
     this.cmd = 'addNote'
     this.alias = 'addnote'
-    this.args = 'inserisci la nota'
+    this.args = 'inserisci la nota (Massimo 60 caratteri)'
     this.example = `${client.conf.prefix}addNote Qui si parla di Angular e delle sue problematiche`
     this.description =
       'Questo comando serve a salvare una nota di un messaggio interessante così da mantenere' +
@@ -14,48 +14,108 @@ module.exports = class AddNote extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
-    this.modelNote = require('../../../core/model/note')
+    this.modelNote = noteModel
   }
 
-  async execution(message) {
+  async execution(message, bot) {
+    // Verifico se il c'è un messaggio allegato
     if (!message.reference) {
-      message.reply(' Il comando deve essere inviato come risposta ad un messaggio già scritto')
+      const embed = new bot._botMessageEmbed()
+      embed.setTitle('Errore inserimento nota')
+      embed.setDescription(
+        'Il comando deve essere inviato come risposta ad un messaggio già scritto',
+      )
+      message.reply(embed)
       return
     }
-
+    // Estraggo i dati del messaggio allegato
     if (
       !message.reference.channelID ||
       !message.reference.guildID ||
       !message.reference.messageID
     ) {
-      message.reply(
-        ' mi dispiace ma qualcosa è andato storto, contatta un amministratore del server',
+      const embed = new bot._botMessageEmbed()
+      embed.setTitle('Nota')
+      embed.setDescription(
+        'Mi dispiace ma qualcosa è andato storto, contatta un amministratore del server',
       )
+      message.reply(embed)
       return
     }
-
+    // Estraggo la nota
     const args = message.args
     if (!message.args) {
-      message.reply(' devi scrivere anche una nota')
+      const embed = new bot._botMessageEmbed()
+      embed.setTitle('Nota')
+      embed.setDescription('Devi scrivere anche una nota')
+      message.reply(embed)
       return
     }
-
-    const obData = {
-      guild_id: message.reference.guildID,
-      channel_id: message.reference.channelID,
-      message_id: message.reference.messageID,
-      author_id: message.author.id,
-      note: args,
-      nickname: true,
+    if (message.args.length >= 60) {
+      const embed = new bot._botMessageEmbed()
+      embed.setTitle('Nota')
+      embed.setDescription('La nota deve essere di massimo 60 caratteri')
+      message.reply(embed)
+      return
     }
-
+    // Verifico lo stato dell'utente che ha scritto il comando
+    let status = false
+    const access = [
+      bot._botSettings.rules.Admin,
+      bot._botSettings.rules.Moderatore,
+      bot._botSettings.rules.Collaboratore,
+    ]
+    // Se è un admin
+    if (message.member.roles.cache.some((itm) => access.includes(itm.name))) {
+      status = true
+    }
+    // Verifico se la nota è già presente
+    const presence = await this.modelNote
+      .findOne({ message_id: message.reference.messageID })
+      .exec()
+    if (presence) {
+      const embed = new bot._botMessageEmbed()
+      embed.setTitle('Errore inserimento Nota')
+      embed.setDescription(`Il messaggio è già stato inserito nelle note.`)
+      embed.setFooter(`ID: ${presence._id}`)
+      message.reply(embed)
+      return
+    }
+    // Provo ad inserirlo in mongo
     try {
-      const newModel = this.modelNote(obData)
+      const newModel = this.modelNote({
+        guild_id: message.reference.guildID,
+        channel_id: message.reference.channelID,
+        message_id: message.reference.messageID,
+        author_id: message.author.id,
+        note: args,
+        status: status,
+      })
       const resp = await newModel.save()
-      message.reply(` nota aggiunta con successo! ID: ${resp._id}`)
+      // In base se è un componente dello staff
+      if (status) {
+        const embed = new bot._botMessageEmbed()
+        embed.setTitle('Hai aggiunto una nota')
+        embed.setDescription(
+          `Nota aggiunta con successo per il canale <#${resp.channel_id}>!\nNota: ${resp.note}`,
+        )
+        embed.setFooter(`ID: ${resp._id}`)
+        message.reply(embed)
+      } else {
+        const embed = new bot._botMessageEmbed()
+        embed.setTitle('Hai aggiunto una nota')
+        embed.setDescription(
+          `Nota aggiunta con successo<#${resp.channel_id}>, in attesa di approvazione!\nNota: \n${resp.note}`,
+        )
+        embed.setFooter(`ID: ${resp._id}`)
+        message.reply(embed)
+      }
     } catch (e) {
       console.log(e)
-      message.reply(' purtroppo non è stato possibile aggiungere la nota..')
+      const embed = new bot._botMessageEmbed()
+      embed.setTitle('Errore inserimento Nota')
+      embed.setDescription('Purtroppo non è stato possibile aggiungere la nota..')
+      message.reply(embed)
     }
   }
 }

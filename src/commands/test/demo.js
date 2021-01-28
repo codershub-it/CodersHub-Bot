@@ -1,10 +1,10 @@
-const Commands = require('../../../core/command')
+const Commands = require('../../core/command')
 
 module.exports = class Demo extends Commands {
   constructor(client) {
     super(client)
-    this.cmd = ''
-    this.alias = ''
+    this.cmd = 'demo'
+    this.alias = 'dem'
     this.args = ''
     this.example = ''
     this.description = ''
@@ -20,6 +20,7 @@ module.exports = class Demo extends Commands {
    * @returns {Promise<void>}
    */
   async execution(message) {
+    console.log(message)
     message.reply('Demo')
   }
 }

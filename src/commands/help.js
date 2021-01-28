@@ -68,7 +68,7 @@ module.exports = class help extends Commands {
       `Se hai delle idee o hai un suggerimento per migliorare il gruppo o il bot, invia la tua proposta con il comando ${bot.conf.prefix}proposta`,
     )
     bot.channels.cache
-      .find((channel) => channel.name === 'comandi-bot')
+      .find((channel) => channel.id === bot._botSettings.channel.comandi_bot_id)
       .send(`**Ciao <@${message.author.id}>** hai attivato il comando ${bot.conf.prefix}help`, emb)
       .catch((e) => {
         console.log(e)

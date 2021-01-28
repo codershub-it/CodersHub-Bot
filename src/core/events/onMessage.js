@@ -51,6 +51,7 @@ function readMessage(message, client) {
     }
   })
   // Se non ci sono risposte positive
+  // todo aggiungere anche il comando fallato
   if (x == 0) {
     const emb = new client._botMessageEmbed()
       .setTitle(`Hei ${message.author.username} sicuro di aver scritto giusto? :scream:`)
