@@ -9,7 +9,7 @@ Grazie per essere disposto a contribuire al progetto!
 
 # Configurazione:
 
-- Effettua il Fork del progetto e clona la repo branches Beta
+- Effettua il Fork del progetto e clona la repo branches main
 - Vai sul sito https://discord.com/developers/applications e crea una nuova applicazione, salvando il client_id dal tab "General Information" e poi salvare il token dalla tab "Bot"
 - Crea un server di test su discord di tua proprietà
 - Nel server appena creato aggiungi il bot usando questo link con il riferimento client_id: https://discord.com/oauth2/authorize?client_id=inserisci-qui-il-client-id&scope=bot&permissions=66321471
