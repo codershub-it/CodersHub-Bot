@@ -6,6 +6,7 @@ const jestConfig = {
   collectCoverageFrom: ['src/**/*.+(js)'],
   testMatch: ['**/__tests__/**/*.+(js)'],
   setupFilesAfterEnv: ['./tests/setup-env.js'],
+  preset: '@shelf/jest-mongodb',
 }
 
 module.exports = jestConfig

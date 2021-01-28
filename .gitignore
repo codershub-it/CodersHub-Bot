@@ -103,3 +103,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Delete globalConfig
+globalConfig.json
