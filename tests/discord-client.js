@@ -3,6 +3,7 @@ const { SnowflakeUtil } = require('discord.js')
 const DiscordManager = require('./DiscordManager')
 const Bot = require('index')
 const settings = require('core/settings')
+const mongo = require('core/mongo')
 
 async function createChannels(guild) {
   const generalChannel = await guild.channels.create('generale')
@@ -48,7 +49,7 @@ async function makeFakeClient() {
       username: 'BOT',
     }),
   })
-  new Bot(client)
+  new Bot(client, mongo)
 
   const guild = new Discord.Guild(client, {
     id: SnowflakeUtil.generate(),

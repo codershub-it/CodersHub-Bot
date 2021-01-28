@@ -2,19 +2,20 @@ const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
 const onReaction = require('./core/events/onReaction')
 const settings = require('./core/settings')
-const mongo = require('./core/mongo')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 
 module.exports = class Bot {
-  constructor(client) {
+  constructor(client, mongo) {
     client._botSettings = settings
     client._botFetch = fetch
     client._botMessageEmbed = MessageEmbed
+    client._botMongo = mongo
     client.conf = {
       prefix: process.env.PREFIX,
     }
     this.client = client
+
     // Load Command
     client._botCommands = this.loadCommands()
     // Avvio il core del bot
@@ -63,9 +64,7 @@ module.exports = class Bot {
     }
   }
 
-  async loadCore(client) {
-    await mongo.init()
-    client._botMongo = mongo
+  async loadCore() {
     onError.init(this.client)
     onMessage.init(this.client)
     onReaction.init(this.client)

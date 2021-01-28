@@ -7,6 +7,7 @@ const jestConfig = {
   testMatch: ['**/__tests__/**/*.+(js)'],
   setupFilesAfterEnv: ['./tests/setup-env.js'],
   preset: '@shelf/jest-mongodb',
+  watchPathIgnorePatterns: ['globalConfig'],
 }
 
 module.exports = jestConfig

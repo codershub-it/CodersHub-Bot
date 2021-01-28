@@ -1,16 +1,20 @@
 const DiscordManager = require('./DiscordManager')
 const server = require('./server')
+const mongo = require('core/mongo')
 
 process.env.DISCORD_BOT_TOKEN = 'FAKE_BOT_TOKEN'
 process.env.PREFIX = '$'
+process.env.DEBUG_PREFIX = 'CodersHubTest'
 
-beforeEach(() => {
+beforeEach(async () => {
+  await mongo.init()
   server.listen({
     onUnhandledRequest: 'error',
   })
 })
 
-afterEach(() => {
+afterEach(async () => {
+  await mongo.removeAllCollections()
   server.resetHandlers()
   DiscordManager.cleanup()
   jest.restoreAllMocks()
@@ -20,4 +24,7 @@ afterEach(() => {
   }
 })
 
-afterAll(() => server.close())
+afterAll(async () => {
+  server.close()
+  await mongo.disconnect()
+})

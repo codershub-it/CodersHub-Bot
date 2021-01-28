@@ -31,7 +31,6 @@ function readMessage(message, client) {
   if (message.content[0] !== client.conf.prefix) return
   message = extendMessage(client, message)
   let x = 0
-
   /**
    * Estraggo tutti i comandi inseriti, verifico il permesso e avvio il comando.
    */
