@@ -18,4 +18,11 @@ module.exports = {
     RemoveReaction: 'RemoveReaction',
     AddMessage: 'AddMessage',
   },
+  /**
+   * Canali fissi per il bot
+   */
+  channel: {
+    suggerimenti_id: '802929607039909898',
+    comandi_bot_id: '802951431455637524',
+  },
 }
