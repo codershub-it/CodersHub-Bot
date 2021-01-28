@@ -9,7 +9,7 @@ module.exports = class Note extends Commands {
     this.example = `${client.conf.prefix}addNote Qui si parla di Angular e delle sue problematiche`
     this.description =
       'Questo comando serve a salvare una nota di un messaggio interessante così da mantenere' +
-      'una traccia di tutti i messaggi importanti, tutti gli utenti possono aggiungere note sarà cura dello' +
+      'una traccia di tutti i messaggi importanti, tutti gli utenti possono aggiungere note, sarà cura dello' +
       'staff approvare la note'
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]

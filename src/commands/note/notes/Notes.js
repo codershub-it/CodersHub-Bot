@@ -9,8 +9,7 @@ module.exports = class Notes extends Commands {
     this.args = 'Puoi scrivere dopo lo spazio la chiave di ricerca'
     this.example = `${client.conf.prefix}Notes Angular`
     this.description =
-      'Questo comando mostra tutte le note presenti in un canale mostrando un lista dinamica.' +
-      'Indicando una id_nota aprirà il dettaglio di quella nota specifica'
+      'Questo comando mostra tutte le note presenti in un canale mostrando un lista dinamica.'
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
@@ -57,7 +56,7 @@ module.exports = class Notes extends Commands {
     const embeds = this.generateQueueEmbed(notes, bot, message.args)
     let currentPage = 0
     const queueEmbed = await message.channel.send(
-      `Current Page: ${currentPage + 1}/${embeds.length}`,
+      `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
       embeds[currentPage],
     )
     // Aggiungo le reazioni
@@ -75,7 +74,7 @@ module.exports = class Notes extends Commands {
         if (currentPage < embeds.length - 1) {
           currentPage++
           await queueEmbed.edit(
-            `Current Page: ${currentPage + 1}/${embeds.length}`,
+            `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
             embeds[currentPage],
           )
           await reaction.users.remove(user.id)
@@ -85,7 +84,7 @@ module.exports = class Notes extends Commands {
         if (currentPage !== 0) {
           --currentPage
           await queueEmbed.edit(
-            `Current Page: ${currentPage + 1}/${embeds.length}`,
+            `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
             embeds[currentPage],
           )
           await reaction.users.remove(user.id)

@@ -19,22 +19,4 @@ module.exports = class Karma extends Commands {
     console.log(reaction)
     console.log(user)
   }
-
-  async execution(message) {
-    const id_author = message.author.id
-    if (message.mentions.members.first()) {
-      const id_mention = message.mentions.members.first().id
-      message.channel
-        .send(
-          `Ciao <@${id_mention}> sei fortunato, l'utente <@${id_author}> ti ha offerto un :coffee:`,
-        )
-        .catch((e) => {
-          console.log(e)
-        })
-    } else {
-      message.channel.send(`Ciao <@${id_author}> eccoti un buon :coffee:`).catch((e) => {
-        console.log(e)
-      })
-    }
-  }
 }

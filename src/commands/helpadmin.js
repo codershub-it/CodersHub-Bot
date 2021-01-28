@@ -1,16 +1,20 @@
 const Commands = require('../core/command')
 
-module.exports = class Help extends Commands {
+module.exports = class HelpAdmins extends Commands {
   constructor(client) {
     super(client)
-    this.cmd = 'help'
-    this.alias = 'h'
+    this.cmd = 'helpadmin'
+    this.alias = 'hadmin'
     this.args = `${client.conf.prefix}help embed`
     this.example = `${client.conf.prefix}help o ${client.conf.prefix}help [nome del comando]`
     this.description =
       'Da solo usa questo comando per avere la lista tutti i comandi. Aggiungendo il nome del comando hai la descrizione dettagliata'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = [
+      client._botSettings.rules.Admin,
+      client._botSettings.rules.Moderatore,
+      client._botSettings.rules.Collaboratore,
+    ]
     this.displayHelp = 1
   }
 
@@ -67,12 +71,9 @@ module.exports = class Help extends Commands {
     emb.setFooter(
       `Se hai delle idee o hai un suggerimento per migliorare il gruppo o il bot, invia la tua proposta con il comando ${bot.conf.prefix}proposta`,
     )
-    bot.channels.cache
-      .find((channel) => channel.id === bot._botSettings.channel.comandi_bot_id)
-      .send(`**Ciao <@${message.author.id}>** hai attivato il comando ${bot.conf.prefix}help`, emb)
-      .catch((e) => {
-        console.log(e)
-      })
+    message.reply(emb).catch((e) => {
+      console.log(e)
+    })
     message.delete()
   }
 }
