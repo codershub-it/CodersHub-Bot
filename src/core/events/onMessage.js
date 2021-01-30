@@ -21,13 +21,6 @@ const extendMessage = (client, message) => {
 function readMessage(message, client) {
   if (message.author.bot) return
 
-  // Aggiunge una reazione se menzionato
-  if (message.mentions.has(client.user)) {
-    message.react('😉').catch((e) => {
-      console.log(e)
-    })
-  }
-
   if (message.content[0] !== client.conf.prefix) return
   message = extendMessage(client, message)
   let x = 0
