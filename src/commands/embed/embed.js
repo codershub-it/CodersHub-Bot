@@ -10,14 +10,18 @@ module.exports = class Embed extends Commands {
     this.description =
       'Con questo comando scrivi un messaggio in embed allegando il file .json. Usa questo sito https://leovoel.github.io/embed-visualizer per creare il file json.'
     this.timer = 0
-    this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore, client._botSettings.rules.Collaboratore]
+    this.access = [
+      client._botSettings.rules.Admin,
+      client._botSettings.rules.Moderatore,
+      client._botSettings.rules.Collaboratore,
+    ]
     this.displayHelp = 1
   }
 
   async execution(message, bot) {
     let channel_id = null
     // Estraggo il canale menzionato
-    if (message.mentions) {
+    if (message.mentions._channels) {
       message.mentions._channels.map((testChannel) => {
         channel_id = testChannel.id
       })
