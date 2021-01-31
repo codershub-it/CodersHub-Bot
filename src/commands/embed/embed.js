@@ -10,7 +10,7 @@ module.exports = class Embed extends Commands {
     this.description =
       'Con questo comando scrivi un messaggio in embed allegando il file .json. Usa questo sito https://leovoel.github.io/embed-visualizer per creare il file json.'
     this.timer = 0
-    this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore]
+    this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore, client._botSettings.rules.Collaboratore]
     this.displayHelp = 1
   }
 
