@@ -14,11 +14,15 @@ module.exports = class EightBall extends Commands {
   }
 
   async execution(message, bot) {
-    const risposta = this.resp()
+    const arg = message.args.match(/.+\?/g)
+    if (!arg) {
+      return message.reply('devi scrivere almeno una domanda')
+    }
+    const answer = this.resp()
     const embed = new bot._botMessageEmbed()
       .setTitle('🎱 La palla dice...')
       .setColor('RANDOM')
-      .setDescription('' + risposta + '')
+      .setDescription('' + answer + '')
     message.channel.send({ embed })
   }
 
