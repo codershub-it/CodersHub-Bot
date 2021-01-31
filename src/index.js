@@ -5,7 +5,6 @@ const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const noteModel = require('./core/model/note')
-// const noteKarma = require('./core/model/karma')
 
 module.exports = class Bot {
   constructor(client, mongo) {
@@ -57,7 +56,6 @@ module.exports = class Bot {
     const GetNotesModeration = require('./commands/note/getNotesModeration/getNotesModeration')
     const Say = require('./commands/say/say')
     const EightBall = require('./commands/eightBall/eightBall')
-    // const Karma = require('./commands/karma/karma')
 
     return {
       coffee: new Coffee(this.client),
@@ -79,7 +77,6 @@ module.exports = class Bot {
       get_notes_moderation: new GetNotesModeration(this.client, noteModel),
       say: new Say(this.client),
       eight_ball: new EightBall(this.client),
-      // karma: new Karma(this.client, noteKarma)
     }
   }
 
