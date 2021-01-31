@@ -6,8 +6,9 @@ process.env.DISCORD_BOT_TOKEN = 'FAKE_BOT_TOKEN'
 process.env.PREFIX = '$'
 process.env.DEBUG_PREFIX = 'CodersHubTest'
 
+beforeAll(async () => await mongo.init())
+
 beforeEach(async () => {
-  await mongo.init()
   server.listen({
     onUnhandledRequest: 'error',
   })
