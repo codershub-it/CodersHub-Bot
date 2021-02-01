@@ -52,6 +52,7 @@ module.exports = class Bot {
     const Demo = require('./commands/test/demo')
     const Note = require('./commands/note/note/Note')
     const Notes = require('./commands/note/notes/Notes')
+    const AllNotes = require('./commands/note/allNotes/allNotes')
     const DelNote = require('./commands/note/delNote/delNote')
     const GetNotesModeration = require('./commands/note/getNotesModeration/getNotesModeration')
     const Say = require('./commands/say/say')
@@ -73,6 +74,7 @@ module.exports = class Bot {
       demo: new Demo(this.client),
       note: new Note(this.client, noteModel),
       notes: new Notes(this.client, noteModel),
+      all_notes: new AllNotes(this.client, noteModel),
       del_note: new DelNote(this.client, noteModel),
       get_notes_moderation: new GetNotesModeration(this.client, noteModel),
       say: new Say(this.client),

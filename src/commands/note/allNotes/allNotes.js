@@ -1,15 +1,14 @@
 const Commands = require('../../../core/command')
 const numberToEmoji = require('../../../core/utility/numberToEmoji')
 
-module.exports = class Notes extends Commands {
+module.exports = class AllNotes extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'Notes'
-    this.alias = 'notes'
+    this.cmd = 'AllNotes'
+    this.alias = 'allnotes'
     this.args = 'Puoi scrivere dopo lo spazio la chiave di ricerca'
-    this.example = `${client.conf.prefix}Notes Angular`
-    this.description =
-      'Questo comando mostra tutte le note presenti in un canale mostrando un lista dinamica.'
+    this.example = `${client.conf.prefix}allNotes Angular`
+    this.description = 'Questo comando mostra tutte le note presenti mostrando lista dinamica.'
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
@@ -21,11 +20,7 @@ module.exports = class Notes extends Commands {
     if (message.args) {
       // Estrae i dati con il motore di ricerca
       notes = await this.modelNote.find({
-        $and: [
-          { note: new RegExp(message.args, 'i') },
-          { status: true },
-          { channel_id: message.channel.id },
-        ],
+        $and: [{ note: new RegExp(message.args, 'i') }, { status: true }],
       })
       // Se non trova nulla...
       if (notes.length == 0) {
@@ -39,9 +34,7 @@ module.exports = class Notes extends Commands {
         return
       }
     } else {
-      notes = await this.modelNote.find({
-        $and: [{ status: true }, { channel_id: message.channel.id }],
-      })
+      notes = await this.modelNote.find({ status: true })
       // Se non trova nulla...
       if (notes.length == 0) {
         const embed = new bot._botMessageEmbed()
@@ -54,48 +47,7 @@ module.exports = class Notes extends Commands {
 
     // Creo l'embeds
     const embeds = this.generateQueueEmbed(notes, bot, message.args)
-    let currentPage = 0
-    const queueEmbed = await message.channel.send(
-      `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
-      embeds[currentPage],
-    )
-    // Aggiungo le reazioni
-    await queueEmbed.react('⬅️')
-    await queueEmbed.react('➡️')
-    await queueEmbed.react('❌')
-    // Creo il sistema di filtraggio in base alla reaction
-    const filter = (reaction, user) =>
-      ['⬅️', '➡️', '❌'].includes(reaction.emoji.name) && message.author.id === user.id
-    const collector = queueEmbed.createReactionCollector(filter)
-    // Avvio il collect di eventi
-    collector.on('collect', async (reaction, user) => {
-      // In base al tipo di reazione effettuo un processo di cambio pagina.
-      if (reaction.emoji.name === '➡️') {
-        if (currentPage < embeds.length - 1) {
-          currentPage++
-          await queueEmbed.edit(
-            `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
-            embeds[currentPage],
-          )
-          await reaction.users.remove(user.id)
-        }
-        await reaction.users.remove(user.id)
-      } else if (reaction.emoji.name === '⬅️') {
-        if (currentPage !== 0) {
-          --currentPage
-          await queueEmbed.edit(
-            `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
-            embeds[currentPage],
-          )
-          await reaction.users.remove(user.id)
-        }
-        await reaction.users.remove(user.id)
-      } else {
-        collector.stop()
-        await queueEmbed.delete()
-        await message.delete()
-      }
-    })
+    await this.embedCompose(embeds, message, bot)
   }
 
   /**
@@ -115,11 +67,10 @@ module.exports = class Notes extends Commands {
       const line = current
         .map(
           (track) =>
-            `**${++j}** - [${this.highlightValueInString(track.note, args)}](${this.makeStringUrl(
-              track.guild_id,
-              track.channel_id,
-              track.message_id,
-            )})`,
+            `**${++j}** [<#${track.channel_id}>] [${this.highlightValueInString(
+              track.note,
+              args,
+            )}](${this.makeStringUrl(track.guild_id, track.channel_id, track.message_id)})`,
         )
         .join('\n')
       if (args) {
