@@ -31,16 +31,4 @@ module.exports = class Fatman extends Commands {
     }
     await clear()
   }
-
-  /**
-   * Attende un x tempo in ms
-   * @param ms
-   */
-  wait(ms) {
-    const start = new Date().getTime()
-    let end = start
-    while (end < start + ms) {
-      end = new Date().getTime()
-    }
-  }
 }
