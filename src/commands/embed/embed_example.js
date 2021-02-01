@@ -9,7 +9,11 @@ module.exports = class EmbedExemple extends Commands {
     this.example = ''
     this.description = 'Scarica il file di esempio .json per creare un embed'
     this.timer = 0
-    this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore]
+    this.access = [
+      client._botSettings.rules.Admin,
+      client._botSettings.rules.Moderatore,
+      client._botSettings.rules.Collaboratore,
+    ]
     this.displayHelp = 1
   }
 

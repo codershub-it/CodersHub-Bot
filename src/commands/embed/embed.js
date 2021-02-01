@@ -6,9 +6,9 @@ module.exports = class Embed extends Commands {
     this.cmd = 'embed'
     this.alias = 'em'
     this.args = '[Oggetto messaggio] [#nome_canale (Opzionale)]'
-    this.example = `${client.conf.prefix}embed 123456789123`
+    this.example = `${client.conf.prefix}embed #nome_canale`
     this.description =
-      'Con questo comando scrivi un messaggio in embed allegando il file .json. Usa questo sito https://leovoel.github.io/embed-visualizer per creare il file json.'
+      'Con questo comando scrivi un messaggio in embed allegando il file .json. Usa questo sito https://leovoel.github.io/embed-visualizer per creare il file json. Puoi aggiungere un ulteriore argomento:  #nome_canale, dove verrà inviato il messaggio embedded'
     this.timer = 0
     this.access = [
       client._botSettings.rules.Admin,
@@ -19,16 +19,20 @@ module.exports = class Embed extends Commands {
   }
 
   async execution(message, bot) {
-    let channel_id = null
-    // Estraggo il canale menzionato
-    if (message.mentions._channels) {
-      message.mentions._channels.map((testChannel) => {
-        channel_id = testChannel.id
-      })
+    const [rawChannelId, ...otherArgs] = message.args.trim().split(' ')
+
+    if (otherArgs && otherArgs.some((x) => !!x)) {
+      message.reply(' puoi usare solamente un argomento opzionale: #nome_canale')
+      message.delete()
+      return
     }
+
+    const channelId = rawChannelId ? rawChannelId.match(/[0-9]/g).join('') : ''
+
     // Verifico la presenza del canale
-    if (!bot.channels.cache.get(channel_id) && channel_id) {
+    if (channelId && !bot.channels.cache.get(channelId)) {
       message.reply(' il canale non esiste in questo server')
+      message.delete()
       return
     }
 
@@ -43,6 +47,7 @@ module.exports = class Embed extends Commands {
       if (_nameFile.split('.').pop() !== 'json') {
         // Errore formato file
         message.reply(' il formato del file è errato')
+        message.delete()
         return
       }
       // Estraggo i dati dal file remoto
@@ -54,6 +59,7 @@ module.exports = class Embed extends Commands {
           message.reply(
             ` non è stato possibile caricare il file usa **${bot.conf.prefix}embed_exemple** per scaricare la demo`,
           )
+          message.delete()
           return
         }
       }
@@ -61,22 +67,30 @@ module.exports = class Embed extends Commands {
       message.reply(
         ` non hai caricato nessun file .json, **${bot.conf.prefix}embed_exemple** per scaricare la demo`,
       )
+      message.delete()
       return
     }
 
     const embed = jsonFile.embed
 
     // Invia il messaggio al canale specifico
-    if (channel_id) {
-      bot.channels.cache.get(channel_id).send(jsonFile.content, { embed })
-      message.reply(` messaggio inviato con successo nel canale: <#${channel_id}>`)
+    if (channelId) {
+      bot.channels.cache.get(channelId).send(jsonFile.content, { embed })
+      message.reply(` messaggio inviato con successo nel canale: <#${channelId}>`)
+      message.delete()
       return
     }
 
     if (jsonFile) {
-      message.channel.send(jsonFile.content, { embed }).catch((e) => {
-        console.log(e)
-      })
+      message.channel
+        .send(jsonFile.content, { embed })
+        .catch((e) => {
+          console.log(e)
+          message.reply(
+            ` errore nell'invio del messaggio embedded, hai allegato un json con il formato corretto?`,
+          )
+        })
+        .finally(() => message.delete())
     }
   }
 }
