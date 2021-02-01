@@ -1,10 +1,11 @@
 const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
-const onReaction = require('./core/events/onReaction')
+const onEvent = require('./core/events/onEvent')
 const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const noteModel = require('./core/model/note')
+const noteEvent = require('./core/model/event')
 
 module.exports = class Bot {
   constructor(client, mongo) {
@@ -85,6 +86,6 @@ module.exports = class Bot {
   async loadCore() {
     onError.init(this.client)
     onMessage.init(this.client)
-    onReaction.init(this.client)
+    onEvent.init(this.client, noteEvent)
   }
 }

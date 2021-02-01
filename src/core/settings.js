@@ -11,14 +11,6 @@ module.exports = {
     Collaboratore: 'Collaboratore',
   },
   /**
-   * Tipologia di task
-   */
-  taskType: {
-    AddReaction: 'AddReaction',
-    RemoveReaction: 'RemoveReaction',
-    AddMessage: 'AddMessage',
-  },
-  /**
    * Canali fissi per il bot
    */
   channel: {
