@@ -1,5 +1,6 @@
 const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
+const onClearNote = require('./core/events/onClearNote')
 const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
@@ -48,11 +49,11 @@ module.exports = class Bot {
     const Hint = require('./commands/hint/hint')
     const Poll = require('./commands/poll/poll')
     const Demo = require('./commands/test/demo')
-    const Note = require('./commands/note/note/Note')
-    const Notes = require('./commands/note/notes/Notes')
-    const AllNotes = require('./commands/note/allNotes/allNotes')
-    const DelNote = require('./commands/note/delNote/delNote')
-    const GetNotesModeration = require('./commands/note/getNotesModeration/getNotesModeration')
+    const Note = require('./commands/note/Note')
+    const Notes = require('./commands/note/Notes')
+    const AllNotes = require('./commands/note/allNotes')
+    const DelNote = require('./commands/note/delNote')
+    const GetNotesModeration = require('./commands/note/getNotesModeration')
     const Say = require('./commands/say/say')
     const EightBall = require('./commands/eightBall/eightBall')
 
@@ -82,5 +83,6 @@ module.exports = class Bot {
   async loadCore() {
     onError.init(this.client)
     onMessage.init(this.client)
+    onClearNote.init(this.client)
   }
 }
