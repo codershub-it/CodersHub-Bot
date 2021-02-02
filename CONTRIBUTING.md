@@ -9,7 +9,7 @@ Grazie per essere disposto a contribuire al progetto!
 
 # Todolist e come inserire nuove idee
 
-- La Todolist si trova nella [seguente pagina](https://github.com/codershub-it/CodersHub-Bot/projects/1)
+- La Todolist si trova nella [seguente pagina](https://github.com/codershub-it/CodersHub-Bot/projects/1) 
 - Per creare una nuova idea o vuoi proporre delle novità aggiungi una issues [nella seguente pagina](https://github.com/codershub-it/CodersHub-Bot/issues).
 - Vuoi lavorare su una issues della todolist scrivilo nella issues dedicata.
 

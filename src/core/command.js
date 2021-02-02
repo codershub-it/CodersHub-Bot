@@ -89,6 +89,7 @@ module.exports = class Commands {
       await queueEmbed.react('❔')
       await queueEmbed.react('🔄')
       await queueEmbed.react('❌')
+
       // Creo il sistema di filtraggio in base alla reaction
       const filter = (reaction, user) =>
         ['⬅️', '➡️', '❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) &&
@@ -121,12 +122,14 @@ module.exports = class Commands {
           // Comando info
           const embed = new client._botMessageEmbed()
           embed.setDescription(
-            '⬅️ : Pagina indietro\n' +
+            '' +
+              '⬅️ : Pagina indietro\n' +
               '➡️ : Pagina avanti\n' +
               'ℹ️ : Info comandi\n' +
               '❔ : Info composizione comandi\n' +
-              '🔄 : Ricarica questo elemento\n' +
-              '❌ : Elimina embed\n',
+              '🔄 : Ricarica la lista\n' +
+              '❌ : Elimina embed\n' +
+              '',
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
@@ -135,20 +138,21 @@ module.exports = class Commands {
           const embed = new client._botMessageEmbed()
           embed.setTitle('Come utilizzare il bot')
           embed.setDescription(
-            '**Ciao! Benvenuto nella pagina della guida.**\n' +
+            '' +
+              '**Ciao! Benvenuto nella pagina della guida.**\n' +
               '**Come si usa questo bot?**\n' +
               'Leggere la firma del bot è piuttosto semplice.\n\n' +
               '**<argomento>**\n' +
               "Ciò significa che l'argomento è obbligatorio.\n\n" +
               '**[argomento]**\n' +
               "Ciò significa che l'argomento è facoltativo.\n\n" +
-              '**"argomento"**\n' +
-              "Ciò significa che l'argomento deve essere inserito tra doppie virgolette.\n\n" +
               '[A | B]\n' +
               'Ciò significa che può essere A o B.\n\n' +
               '**[argomento...]**\n' +
-              'Ciò significa che puoi avere più argomenti.\n\n' +
-              'il comando e il resto degli argomenti deve essere sempre separati da uno spazio\n',
+              'Ciò significa che puoi avere più argomenti.\n' +
+              "Devi sapere che se può essere richiesto l'inserimento delle virgolette tra " +
+              'il comando e il resto degli argomenti ci deve essere sempre uno spazio\n' +
+              'Non scrivi tra parentesi!\n',
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
@@ -175,6 +179,7 @@ module.exports = class Commands {
       await queueEmbed.react('❔')
       await queueEmbed.react('🔄')
       await queueEmbed.react('❌')
+
       // Creo il sistema di filtraggio in base alla reaction
       const filter = (reaction, user) =>
         ['❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) && message.author.id === user.id
@@ -186,10 +191,14 @@ module.exports = class Commands {
           // Comando info
           const embed = new client._botMessageEmbed()
           embed.setDescription(
-            'ℹ️ : Info comandi\n' +
+            '' +
+              '⬅️ : Pagina indietro\n' +
+              '➡️ : Pagina avanti\n' +
+              'ℹ️ : Info comandi\n' +
               '❔ : Info composizione comandi\n' +
-              '🔄 : Ricarica questo elemento\n' +
-              '❌ : Elimina embed\n',
+              '🔄 : Ricarica la lista\n' +
+              '❌ : Elimina embed\n' +
+              '',
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
@@ -198,20 +207,21 @@ module.exports = class Commands {
           const embed = new client._botMessageEmbed()
           embed.setTitle('Come utilizzare il bot')
           embed.setDescription(
-            '**Ciao! Benvenuto nella pagina della guida.**\n' +
+            '' +
+              '**Ciao! Benvenuto nella pagina della guida.**\n' +
               '**Come si usa questo bot?**\n' +
               'Leggere la firma del bot è piuttosto semplice.\n\n' +
               '**<argomento>**\n' +
               "Ciò significa che l'argomento è obbligatorio.\n\n" +
               '**[argomento]**\n' +
               "Ciò significa che l'argomento è facoltativo.\n\n" +
-              '**"argomento"**\n' +
-              "Ciò significa che l'argomento deve essere inserito tra doppie virgolette.\n\n" +
               '[A | B]\n' +
               'Ciò significa che può essere A o B.\n\n' +
               '**[argomento...]**\n' +
-              'Ciò significa che puoi avere più argomenti.\n\n' +
-              'il comando e il resto degli argomenti deve essere sempre separati da uno spazio\n',
+              'Ciò significa che puoi avere più argomenti.\n' +
+              "Devi sapere che se può essere richiesto l'inserimento delle virgolette tra " +
+              'il comando e il resto degli argomenti ci deve essere sempre uno spazio\n' +
+              'Non scrivi tra parentesi!\n',
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
