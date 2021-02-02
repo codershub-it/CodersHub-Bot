@@ -37,7 +37,6 @@ module.exports = class Bot {
 
   loadCommands() {
     const Help = require('./commands/help')
-    const HelpAdmin = require('./commands/helpadmin')
     const Ban = require('./commands/ban/ban')
     const Kick = require('./commands/kick/kick')
     const Embed = require('./commands/embed/embed')
@@ -65,7 +64,6 @@ module.exports = class Bot {
       fat_man: new Fatman(this.client),
       embed_example: new EmbedExample(this.client),
       help: new Help(this.client),
-      help_admin: new HelpAdmin(this.client),
       ping: new Ping(this.client),
       code: new Code(this.client),
       hint: new Hint(this.client),

@@ -36,6 +36,7 @@ module.exports = class Notes extends Commands {
         )
         embed.setColor('RANDOM')
         message.reply(embed)
+        message.delete()
         return
       }
     } else {
@@ -48,54 +49,15 @@ module.exports = class Notes extends Commands {
         embed.setDescription(`Purtroppo non ci sono note salvate`)
         embed.setColor('RANDOM')
         message.reply(embed)
+        message.delete()
         return
       }
     }
 
     // Creo l'embeds
     const embeds = this.generateQueueEmbed(notes, bot, message.args)
-    let currentPage = 0
-    const queueEmbed = await message.channel.send(
-      `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
-      embeds[currentPage],
-    )
-    // Aggiungo le reazioni
-    await queueEmbed.react('⬅️')
-    await queueEmbed.react('➡️')
-    await queueEmbed.react('❌')
-    // Creo il sistema di filtraggio in base alla reaction
-    const filter = (reaction, user) =>
-      ['⬅️', '➡️', '❌'].includes(reaction.emoji.name) && message.author.id === user.id
-    const collector = queueEmbed.createReactionCollector(filter)
-    // Avvio il collect di eventi
-    collector.on('collect', async (reaction, user) => {
-      // In base al tipo di reazione effettuo un processo di cambio pagina.
-      if (reaction.emoji.name === '➡️') {
-        if (currentPage < embeds.length - 1) {
-          currentPage++
-          await queueEmbed.edit(
-            `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
-            embeds[currentPage],
-          )
-          await reaction.users.remove(user.id)
-        }
-        await reaction.users.remove(user.id)
-      } else if (reaction.emoji.name === '⬅️') {
-        if (currentPage !== 0) {
-          --currentPage
-          await queueEmbed.edit(
-            `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
-            embeds[currentPage],
-          )
-          await reaction.users.remove(user.id)
-        }
-        await reaction.users.remove(user.id)
-      } else {
-        collector.stop()
-        await queueEmbed.delete()
-        await message.delete()
-      }
-    })
+    await this.embedCompose(embeds, message, bot)
+    await message.delete()
   }
 
   /**

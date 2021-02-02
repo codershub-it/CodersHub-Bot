@@ -30,11 +30,13 @@ module.exports = class GetNotesModeration extends Commands {
         embed.setDescription(`Abilitato con successo`)
         embed.setColor('RANDOM')
         message.reply(embed)
+        message.delete()
       } catch (e) {
         const embed = new bot._botMessageEmbed()
         embed.setDescription(`Abilitazione non riuscita`)
         embed.setColor('RANDOM')
         message.reply(embed)
+        message.delete()
       }
       return
     }
@@ -47,52 +49,13 @@ module.exports = class GetNotesModeration extends Commands {
       embed.setDescription(`Non ci sono note da gestire.`)
       embed.setColor('RANDOM')
       message.reply(embed)
+      message.delete()
       return
     }
     // Creo l'embeds
     const embeds = this.generateQueueEmbed(notes, bot)
-    let currentPage = 0
-    const queueEmbed = await message.channel.send(
-      `Current Page: ${currentPage + 1}/${embeds.length}`,
-      embeds[currentPage],
-    )
-    // Aggiungo le reazioni
-    await queueEmbed.react('⬅️')
-    await queueEmbed.react('➡️')
-    await queueEmbed.react('❌')
-    // Creo il sistema di filtraggio in base alla reaction
-    const filter = (reaction, user) =>
-      ['⬅️', '➡️', '❌'].includes(reaction.emoji.name) && message.author.id === user.id
-    const collector = queueEmbed.createReactionCollector(filter)
-    // Avvio il collect di eventi
-    collector.on('collect', async (reaction, user) => {
-      // In base al tipo di reazione effettuo un processo di cambio pagina.
-      if (reaction.emoji.name === '➡️') {
-        if (currentPage < embeds.length - 1) {
-          currentPage++
-          await queueEmbed.edit(
-            `Current Page: ${currentPage + 1}/${embeds.length}`,
-            embeds[currentPage],
-          )
-          await reaction.users.remove(user.id)
-        }
-        await reaction.users.remove(user.id)
-      } else if (reaction.emoji.name === '⬅️') {
-        if (currentPage !== 0) {
-          --currentPage
-          await queueEmbed.edit(
-            `Current Page: ${currentPage + 1}/${embeds.length}`,
-            embeds[currentPage],
-          )
-          await reaction.users.remove(user.id)
-        }
-        await reaction.users.remove(user.id)
-      } else {
-        collector.stop()
-        await queueEmbed.delete()
-        await message.delete()
-      }
-    })
+    await this.embedCompose(embeds, message, bot)
+    await message.delete()
   }
 
   /**

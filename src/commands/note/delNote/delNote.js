@@ -22,19 +22,22 @@ module.exports = class DelNote extends Commands {
     const args = message.args
     if (!message.args) {
       message.reply(' devi inserire il codice di riferimento della note')
+      message.delete()
       return
     }
     if (message.args.length < 24) {
       message.reply(" l'id della nota deve avere 24 caratteri")
+      message.delete()
       return
     }
     try {
       const resp = await this.modelNote.findByIdAndDelete({ _id: args })
-      console.log(resp)
       message.reply(` nota eliminata! ID: ${resp._id}`)
+      message.delete()
     } catch (e) {
-      // console.log(e)
+      console.log(e)
       message.reply(' non sono riuscito a eliminare la nota, questa nota non esiste')
+      message.delete()
     }
   }
 }

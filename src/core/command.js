@@ -72,11 +72,32 @@ module.exports = class Commands {
     }
   }
 
+  /**
+   * Testo di come utilizzare il bot
+   * @returns {string}
+   */
+  textUtilizzo() {
+    return (
+      '**Ciao! Benvenuto nella pagina della guida.**\n' +
+      '**Come si usa questo bot?**\n' +
+      'Leggere la firma del bot è piuttosto semplice.\n\n' +
+      '**<argomento>**\n' +
+      "Ciò significa che l'argomento è obbligatorio.\n\n" +
+      '**[argomento]**\n' +
+      "Ciò significa che l'argomento è facoltativo.\n\n" +
+      '[A | B]\n' +
+      'Ciò significa che può essere A o B.\n\n' +
+      '**[argomento...]**\n' +
+      'Ciò significa che puoi avere più argomenti.\n' +
+      'Tra il comando e il resto degli argomenti ci deve essere sempre uno spazio\n' +
+      'Non scrivi tra parentesi!\n'
+    )
+  }
+
   async embedCompose(embeds = [], message, client) {
     // Pagina start
     let currentPage = 0
     // Invio comando
-
     if (embeds.length > 1) {
       const queueEmbed = await message.channel.send(
         `Pagina corrente: ${currentPage + 1}/${embeds.length}`,
@@ -94,7 +115,8 @@ module.exports = class Commands {
       const filter = (reaction, user) =>
         ['⬅️', '➡️', '❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) &&
         message.author.id === user.id
-      const collector = queueEmbed.createReactionCollector(filter, { time: 15000 })
+      // La durata è di 30000 ms 30s
+      const collector = queueEmbed.createReactionCollector(filter, { time: 30000 })
       // Avvio il collect di eventi
       collector.on('collect', async (reaction, user) => {
         // In base al tipo di reazione effettuo un processo di cambio pagina.
@@ -108,6 +130,7 @@ module.exports = class Commands {
             await reaction.users.remove(user.id)
           }
           await reaction.users.remove(user.id)
+          // Allungo di altri 30s
           collector.resetTimer()
         } else if (reaction.emoji.name === '⬅️') {
           if (currentPage !== 0) {
@@ -124,41 +147,25 @@ module.exports = class Commands {
           // Comando info
           const embed = new client._botMessageEmbed()
           embed.setDescription(
-            '' +
-              '⬅️ : Pagina indietro\n' +
+            '⬅️ : Pagina indietro\n' +
               '➡️ : Pagina avanti\n' +
               'ℹ️ : Info comandi\n' +
               '❔ : Info composizione comandi\n' +
               '🔄 : Ricarica la lista\n' +
-              '❌ : Elimina embed\n' +
-              '',
+              '❌ : Elimina embed\n',
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          // Allungo di altri 30s
           collector.resetTimer()
         } else if (reaction.emoji.name === '❔') {
           // Question tab
           const embed = new client._botMessageEmbed()
-          embed.setTitle('Come utilizzare il bot')
-          embed.setDescription(
-            '' +
-              '**Ciao! Benvenuto nella pagina della guida.**\n' +
-              '**Come si usa questo bot?**\n' +
-              'Leggere la firma del bot è piuttosto semplice.\n\n' +
-              '**<argomento>**\n' +
-              "Ciò significa che l'argomento è obbligatorio.\n\n" +
-              '**[argomento]**\n' +
-              "Ciò significa che l'argomento è facoltativo.\n\n" +
-              '[A | B]\n' +
-              'Ciò significa che può essere A o B.\n\n' +
-              '**[argomento...]**\n' +
-              'Ciò significa che puoi avere più argomenti.\n' +
-              "Devi sapere che se può essere richiesto l'inserimento delle virgolette tra " +
-              'il comando e il resto degli argomenti ci deve essere sempre uno spazio\n' +
-              'Non scrivi tra parentesi!\n',
-          )
+          embed.setTitle('Come leggere i comandi del bot')
+          embed.setDescription(this.textUtilizzo())
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          // Allungo di altri 30s
           collector.resetTimer()
         } else if (reaction.emoji.name === '🔄') {
           currentPage = 0
@@ -167,17 +174,16 @@ module.exports = class Commands {
             embeds[currentPage],
           )
           await reaction.users.remove(user.id)
+          // Allungo di altri 30s
           collector.resetTimer()
         } else {
           collector.stop()
-          await queueEmbed.delete()
-          await message.delete()
         }
       })
+      // Elimino quando finisce il timer
       collector.on('end', async () => {
         // console.log(collected)
         await queueEmbed.delete()
-        await message.delete()
       })
     } else {
       const queueEmbed = await message.channel.send(
@@ -189,7 +195,6 @@ module.exports = class Commands {
       await queueEmbed.react('❔')
       await queueEmbed.react('🔄')
       await queueEmbed.react('❌')
-
       // Creo il sistema di filtraggio in base alla reaction
       const filter = (reaction, user) =>
         ['❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) && message.author.id === user.id
@@ -201,14 +206,12 @@ module.exports = class Commands {
           // Comando info
           const embed = new client._botMessageEmbed()
           embed.setDescription(
-            '' +
-              '⬅️ : Pagina indietro\n' +
+            '⬅️ : Pagina indietro\n' +
               '➡️ : Pagina avanti\n' +
               'ℹ️ : Info comandi\n' +
               '❔ : Info composizione comandi\n' +
               '🔄 : Ricarica la lista\n' +
-              '❌ : Elimina embed\n' +
-              '',
+              '❌ : Elimina embed\n',
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
@@ -216,26 +219,11 @@ module.exports = class Commands {
         } else if (reaction.emoji.name === '❔') {
           // Question tab
           const embed = new client._botMessageEmbed()
-          embed.setTitle('Come utilizzare il bot')
-          embed.setDescription(
-            '' +
-              '**Ciao! Benvenuto nella pagina della guida.**\n' +
-              '**Come si usa questo bot?**\n' +
-              'Leggere la firma del bot è piuttosto semplice.\n\n' +
-              '**<argomento>**\n' +
-              "Ciò significa che l'argomento è obbligatorio.\n\n" +
-              '**[argomento]**\n' +
-              "Ciò significa che l'argomento è facoltativo.\n\n" +
-              '[A | B]\n' +
-              'Ciò significa che può essere A o B.\n\n' +
-              '**[argomento...]**\n' +
-              'Ciò significa che puoi avere più argomenti.\n' +
-              "Devi sapere che se può essere richiesto l'inserimento delle virgolette tra " +
-              'il comando e il resto degli argomenti ci deve essere sempre uno spazio\n' +
-              'Non scrivi tra parentesi!\n',
-          )
+          embed.setTitle('Come leggere i comandi del bot')
+          embed.setDescription(this.textUtilizzo())
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          // Allungo di altri 30s
           collector.resetTimer()
         } else if (reaction.emoji.name === '🔄') {
           currentPage = 0
@@ -244,18 +232,16 @@ module.exports = class Commands {
             embeds[currentPage],
           )
           await reaction.users.remove(user.id)
+          // Allungo di altri 30s
           collector.resetTimer()
         } else {
           collector.stop()
-          await queueEmbed.delete()
-          await message.delete()
         }
-        collector.resetTimer()
       })
+      // Elimino il messaggio dopo 30s
       collector.on('end', async () => {
         // console.log(collected)
         await queueEmbed.delete()
-        await message.delete()
       })
     }
   }

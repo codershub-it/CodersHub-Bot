@@ -26,6 +26,7 @@ module.exports = class Note extends Commands {
         'Il comando deve essere inviato come risposta ad un messaggio già scritto',
       )
       message.reply(embed)
+      message.delete()
       return
     }
     // Estraggo i dati del messaggio allegato
@@ -40,6 +41,7 @@ module.exports = class Note extends Commands {
         'Mi dispiace ma qualcosa è andato storto, contatta un amministratore del server',
       )
       message.reply(embed)
+      message.delete()
       return
     }
     // Estraggo la nota
@@ -49,6 +51,7 @@ module.exports = class Note extends Commands {
       embed.setTitle('Nota')
       embed.setDescription('Devi scrivere anche una nota')
       message.reply(embed)
+      message.delete()
       return
     }
     if (message.args.length >= 60) {
@@ -56,6 +59,7 @@ module.exports = class Note extends Commands {
       embed.setTitle('Nota')
       embed.setDescription('La nota deve essere di massimo 60 caratteri')
       message.reply(embed)
+      message.delete()
       return
     }
     // Verifico lo stato dell'utente che ha scritto il comando
@@ -101,6 +105,7 @@ module.exports = class Note extends Commands {
         )
         embed.setFooter(`ID: ${resp._id}`)
         message.reply(embed)
+        message.delete()
       } else {
         const embed = new bot._botMessageEmbed()
         embed.setTitle('Hai aggiunto una nota')
@@ -109,6 +114,7 @@ module.exports = class Note extends Commands {
         )
         embed.setFooter(`ID: ${resp._id}`)
         message.reply(embed)
+        message.delete()
       }
     } catch (e) {
       console.log(e)
@@ -116,6 +122,7 @@ module.exports = class Note extends Commands {
       embed.setTitle('Errore inserimento Nota')
       embed.setDescription('Purtroppo non è stato possibile aggiungere la nota..')
       message.reply(embed)
+      message.delete()
     }
   }
 }

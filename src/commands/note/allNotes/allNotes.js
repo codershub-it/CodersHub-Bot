@@ -31,6 +31,7 @@ module.exports = class AllNotes extends Commands {
         )
         embed.setColor('RANDOM')
         message.reply(embed)
+        message.delete()
         return
       }
     } else {
@@ -41,13 +42,13 @@ module.exports = class AllNotes extends Commands {
         embed.setDescription(`Purtroppo non ci sono note salvate`)
         embed.setColor('RANDOM')
         message.reply(embed)
+        message.delete()
         return
       }
     }
-
-    // Creo l'embeds
     const embeds = this.generateQueueEmbed(notes, bot, message.args)
     await this.embedCompose(embeds, message, bot)
+    await message.delete()
   }
 
   /**
