@@ -94,7 +94,7 @@ module.exports = class Commands {
       const filter = (reaction, user) =>
         ['⬅️', '➡️', '❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) &&
         message.author.id === user.id
-      const collector = queueEmbed.createReactionCollector(filter)
+      const collector = queueEmbed.createReactionCollector(filter, { time: 15000 })
       // Avvio il collect di eventi
       collector.on('collect', async (reaction, user) => {
         // In base al tipo di reazione effettuo un processo di cambio pagina.
@@ -108,6 +108,7 @@ module.exports = class Commands {
             await reaction.users.remove(user.id)
           }
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else if (reaction.emoji.name === '⬅️') {
           if (currentPage !== 0) {
             --currentPage
@@ -118,6 +119,7 @@ module.exports = class Commands {
             await reaction.users.remove(user.id)
           }
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else if (reaction.emoji.name === 'ℹ️') {
           // Comando info
           const embed = new client._botMessageEmbed()
@@ -133,6 +135,7 @@ module.exports = class Commands {
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else if (reaction.emoji.name === '❔') {
           // Question tab
           const embed = new client._botMessageEmbed()
@@ -156,6 +159,7 @@ module.exports = class Commands {
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else if (reaction.emoji.name === '🔄') {
           currentPage = 0
           await queueEmbed.edit(
@@ -163,11 +167,17 @@ module.exports = class Commands {
             embeds[currentPage],
           )
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else {
           collector.stop()
           await queueEmbed.delete()
           await message.delete()
         }
+      })
+      collector.on('end', async () => {
+        // console.log(collected)
+        await queueEmbed.delete()
+        await message.delete()
       })
     } else {
       const queueEmbed = await message.channel.send(
@@ -183,7 +193,7 @@ module.exports = class Commands {
       // Creo il sistema di filtraggio in base alla reaction
       const filter = (reaction, user) =>
         ['❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) && message.author.id === user.id
-      const collector = queueEmbed.createReactionCollector(filter)
+      const collector = queueEmbed.createReactionCollector(filter, { max: 2, time: 15000 })
       // Avvio il collect di eventi
       collector.on('collect', async (reaction, user) => {
         // In base al tipo di reazione effettuo un processo di cambio pagina.
@@ -202,6 +212,7 @@ module.exports = class Commands {
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else if (reaction.emoji.name === '❔') {
           // Question tab
           const embed = new client._botMessageEmbed()
@@ -225,6 +236,7 @@ module.exports = class Commands {
           )
           await queueEmbed.edit(`Descrizione comandi`, embed)
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else if (reaction.emoji.name === '🔄') {
           currentPage = 0
           await queueEmbed.edit(
@@ -232,11 +244,18 @@ module.exports = class Commands {
             embeds[currentPage],
           )
           await reaction.users.remove(user.id)
+          collector.resetTimer()
         } else {
           collector.stop()
           await queueEmbed.delete()
           await message.delete()
         }
+        collector.resetTimer()
+      })
+      collector.on('end', async () => {
+        // console.log(collected)
+        await queueEmbed.delete()
+        await message.delete()
       })
     }
   }

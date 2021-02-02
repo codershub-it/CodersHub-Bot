@@ -1,6 +1,5 @@
 const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
-const onReaction = require('./core/events/onReaction')
 const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
@@ -85,6 +84,5 @@ module.exports = class Bot {
   async loadCore() {
     onError.init(this.client)
     onMessage.init(this.client)
-    onReaction.init(this.client)
   }
 }
