@@ -56,6 +56,7 @@ module.exports = class Bot {
     const GetNotesModeration = require('./commands/note/getNotesModeration')
     const Say = require('./commands/say/say')
     const EightBall = require('./commands/eightBall/eightBall')
+    const Opla = require('./commands/opla/opla')
 
     return {
       coffee: new Coffee(this.client),
@@ -77,6 +78,7 @@ module.exports = class Bot {
       get_notes_moderation: new GetNotesModeration(this.client, noteModel),
       say: new Say(this.client),
       eight_ball: new EightBall(this.client),
+      opla: new Opla(this.client),
     }
   }
 
