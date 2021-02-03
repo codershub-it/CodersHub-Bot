@@ -3,7 +3,7 @@ const Commands = require('../../core/command')
 module.exports = class Opla extends Commands {
   constructor(client) {
     super(client)
-    this.cmd = 'Oplà'
+    this.cmd = 'oplà'
     this.alias = 'opla'
     this.args = ''
     this.example = ``
