@@ -36,7 +36,7 @@ function readMessage(message, client) {
         return message.reply('mi dispiace ma non hai i permessi per inviare questo comando')
       }
       // Start command
-      cmd.execution(message, client).catch((e) => {
+      cmd.execution(message).catch((e) => {
         console.log(e)
       })
       x++
