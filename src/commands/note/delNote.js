@@ -16,6 +16,7 @@ module.exports = class DelNote extends Commands {
     ]
     this.displayHelp = 1
     this.modelNote = note
+    this.client = client
   }
 
   async execution(message) {

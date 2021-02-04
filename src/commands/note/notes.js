@@ -14,9 +14,10 @@ module.exports = class Notes extends Commands {
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
     this.modelNote = note
+    this.client = client
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     let notes = []
     if (message.args) {
       // Estrae i dati con il motore di ricerca
@@ -29,7 +30,7 @@ module.exports = class Notes extends Commands {
       })
       // Se non trova nulla...
       if (notes.length == 0) {
-        const embed = new bot._botMessageEmbed()
+        const embed = new this.client._botMessageEmbed()
         embed.setTitle('404')
         embed.setDescription(
           `Purtroppo non ho trovato nulla con la chiave di ricerca: ${message.args}`,
@@ -45,7 +46,7 @@ module.exports = class Notes extends Commands {
       })
       // Se non trova nulla...
       if (notes.length == 0) {
-        const embed = new bot._botMessageEmbed()
+        const embed = new this.client._botMessageEmbed()
         embed.setDescription(`Purtroppo non ci sono note salvate`)
         embed.setColor('RANDOM')
         message.reply(embed)
@@ -55,8 +56,8 @@ module.exports = class Notes extends Commands {
     }
 
     // Creo l'embeds
-    const embeds = this.generateQueueEmbed(notes, bot, message.args)
-    await this.embedCompose(embeds, message, bot)
+    const embeds = this.generateQueueEmbed(notes, this.client, message.args)
+    await this.embedCompose(embeds, message, this.client)
     await message.delete()
   }
 

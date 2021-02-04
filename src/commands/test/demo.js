@@ -11,6 +11,7 @@ module.exports = class Demo extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 0
+    this.client = client
   }
 
   /**

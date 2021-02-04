@@ -10,16 +10,16 @@ module.exports = class EightBall extends Commands {
     this.description = 'La palla della fortuna 🚀'
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
-    this.displayHelp = 1
+    ;(this.displayHelp = 1), (this.client = client)
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const arg = message.args.match(/.+\?/g)
     if (!arg) {
       return message.reply('devi scrivere almeno una domanda')
     }
     const answer = this.resp()
-    const embed = new bot._botMessageEmbed()
+    const embed = new this.client._botMessageEmbed()
       .setTitle('🎱 La palla dice...')
       .setColor('RANDOM')
       .setDescription('' + answer + '')

@@ -13,6 +13,7 @@ module.exports = class Poll extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
+    this.client = client
   }
 
   /**
@@ -21,7 +22,7 @@ module.exports = class Poll extends Commands {
    * @param bot
    * @returns {Promise<void>}
    */
-  async execution(message, bot) {
+  async execution(message) {
     const arg = message.args.match(/"(.*?)"/g)
     if (!arg) {
       message.reply('devi scrivere almeno una domanda e delle risposte tra doppie virgolette')
@@ -36,7 +37,7 @@ module.exports = class Poll extends Commands {
     arg.shift()
     if (question_string) {
       if (arg && arg.length > 0 && arg.length < 11) {
-        const emb = new bot._botMessageEmbed()
+        const emb = new this.client._botMessageEmbed()
         let msg = `**Domanda proposta da <@${message.author.id}>**\n${question_string}\n`
         msg += '**-- Risposte --**\n'
         Array.from(arg).forEach((answer, i) => {
@@ -50,7 +51,7 @@ module.exports = class Poll extends Commands {
         }
         await message.delete()
       } else {
-        const emb = new bot._botMessageEmbed()
+        const emb = new this.client._botMessageEmbed()
         const msg = `
 -- **Domanda proposta da <@${message.author.id}>** --
 ${question_string}

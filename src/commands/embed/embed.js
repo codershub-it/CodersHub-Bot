@@ -16,9 +16,10 @@ module.exports = class Embed extends Commands {
       client._botSettings.rules.Collaboratore,
     ]
     this.displayHelp = 1
+    this.client = client
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const [rawChannelId, ...otherArgs] = message.args.trim().split(' ')
 
     if (otherArgs && otherArgs.some((x) => !!x)) {
@@ -30,7 +31,7 @@ module.exports = class Embed extends Commands {
     const channelId = rawChannelId ? rawChannelId.match(/[0-9]/g).join('') : ''
 
     // Verifico la presenza del canale
-    if (channelId && !bot.channels.cache.get(channelId)) {
+    if (channelId && !this.client.channels.cache.get(channelId)) {
       message.reply(' il canale non esiste in questo server')
       message.delete()
       return
@@ -53,11 +54,11 @@ module.exports = class Embed extends Commands {
       // Estraggo i dati dal file remoto
       if (_maFileUrl) {
         try {
-          jsonFile = await (await bot._botFetch(_maFileUrl)).json()
+          jsonFile = await (await this.client._botFetch(_maFileUrl)).json()
         } catch (e) {
           // Errore caricamento file
           message.reply(
-            ` non è stato possibile caricare il file usa **${bot.conf.prefix}embed_exemple** per scaricare la demo`,
+            ` non è stato possibile caricare il file usa **${this.client.conf.prefix}embed_exemple** per scaricare la demo`,
           )
           message.delete()
           return
@@ -65,7 +66,7 @@ module.exports = class Embed extends Commands {
       }
     } else {
       message.reply(
-        ` non hai caricato nessun file .json, **${bot.conf.prefix}embed_exemple** per scaricare la demo`,
+        ` non hai caricato nessun file .json, **${this.client.conf.prefix}embed_exemple** per scaricare la demo`,
       )
       message.delete()
       return
@@ -75,7 +76,7 @@ module.exports = class Embed extends Commands {
 
     // Invia il messaggio al canale specifico
     if (channelId) {
-      bot.channels.cache.get(channelId).send(jsonFile.content, { embed })
+      this.client.channels.cache.get(channelId).send(jsonFile.content, { embed })
       message.reply(` messaggio inviato con successo nel canale: <#${channelId}>`)
       message.delete()
       return

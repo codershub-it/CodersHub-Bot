@@ -15,6 +15,7 @@ module.exports = class Say extends Commands {
       client._botSettings.rules.Moderatore,
     ]
     this.displayHelp = 1
+    this.client = client
   }
 
   async execution(message) {

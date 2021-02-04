@@ -14,13 +14,13 @@ module.exports = class Hint extends Commands {
     this.client = client
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const args = message.args
     const hintChannel = this.client.channels.cache.find(
-      (channel) => channel.id === bot._botSettings.channel.suggerimenti_id,
+      (channel) => channel.id === this.client._botSettings.channel.suggerimenti_id,
     )
     if (args.length > 20) {
-      const emb = new bot._botMessageEmbed()
+      const emb = new this.client._botMessageEmbed()
       emb.setTitle(
         `Nuovo suggerimento da ${
           message.author.username ? message.author.username : message.author.name

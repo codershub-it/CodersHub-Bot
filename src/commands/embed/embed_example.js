@@ -15,6 +15,7 @@ module.exports = class EmbedExemple extends Commands {
       client._botSettings.rules.Collaboratore,
     ]
     this.displayHelp = 1
+    this.client = client
   }
 
   async execution(message) {

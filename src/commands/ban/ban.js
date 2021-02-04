@@ -10,9 +10,10 @@ module.exports = class Ban extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore]
     this.displayHelp = 1
+    this.client = client
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const member = message.mentions.members.first()
     if (!member) {
       message.reply(' attenzione devi menzionare un utente')
@@ -29,7 +30,7 @@ module.exports = class Ban extends Commands {
 
     if (typeof day_ban !== 'string') {
       message.reply(
-        ` attenzione devi inserire i giorni di ban es: ${bot.conf.prefix}ban 4 perché si comporta male`,
+        ` attenzione devi inserire i giorni di ban es: ${this.client.conf.prefix}ban 4 perché si comporta male`,
       )
       return
     }

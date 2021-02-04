@@ -11,6 +11,7 @@ module.exports = class Opla extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
+    this.client = client
   }
 
   getQuote() {
@@ -29,9 +30,9 @@ module.exports = class Opla extends Commands {
     return quotes[quoteIndex]
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const quote = this.getQuote()
-    const embed = new bot._botMessageEmbed()
+    const embed = new this.client._botMessageEmbed()
       .setTitle('Fabio Biondi ha detto: ')
       .setColor('RANDOM')
       .setDescription('' + quote + '')

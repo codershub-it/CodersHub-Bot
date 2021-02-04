@@ -11,6 +11,7 @@ module.exports = class Help extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.Admin, client._botSettings.rules.Moderatore]
     this.displayHelp = 1
+    this.client = client
   }
 
   async execution(message) {

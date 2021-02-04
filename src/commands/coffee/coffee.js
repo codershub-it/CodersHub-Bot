@@ -11,6 +11,7 @@ module.exports = class Coffee extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
+    this.client = client
   }
 
   async execution(message) {

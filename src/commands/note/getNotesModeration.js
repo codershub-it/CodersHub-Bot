@@ -18,21 +18,22 @@ module.exports = class GetNotesModeration extends Commands {
     ]
     this.displayHelp = 1
     this.modelNote = note
+    this.client = client
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     // Abilito un id specifico
     if (message.args) {
       const noteID = message.args
       try {
         await this.modelNote.findByIdAndUpdate(noteID, { status: true })
-        const embed = new bot._botMessageEmbed()
+        const embed = new this.client._botMessageEmbed()
         embed.setDescription(`Abilitato con successo`)
         embed.setColor('RANDOM')
         message.reply(embed)
         message.delete()
       } catch (e) {
-        const embed = new bot._botMessageEmbed()
+        const embed = new this.client._botMessageEmbed()
         embed.setDescription(`Abilitazione non riuscita`)
         embed.setColor('RANDOM')
         message.reply(embed)
@@ -45,7 +46,7 @@ module.exports = class GetNotesModeration extends Commands {
     notes = await this.modelNote.find({}).where('status', false)
     // Se non trova nulla...
     if (notes.length == 0) {
-      const embed = new bot._botMessageEmbed()
+      const embed = new this.client._botMessageEmbed()
       embed.setDescription(`Non ci sono note da gestire.`)
       embed.setColor('RANDOM')
       message.reply(embed)
@@ -53,8 +54,8 @@ module.exports = class GetNotesModeration extends Commands {
       return
     }
     // Creo l'embeds
-    const embeds = this.generateQueueEmbed(notes, bot)
-    await this.embedCompose(embeds, message, bot)
+    const embeds = this.generateQueueEmbed(notes, this.client)
+    await this.embedCompose(embeds, message, this.client)
     await message.delete()
   }
 

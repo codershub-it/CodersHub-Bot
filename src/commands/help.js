@@ -11,22 +11,23 @@ module.exports = class Help extends Commands {
     this.timer = 0
     this.access = [client._botSettings.rules.everyone]
     this.displayHelp = 1
+    this.client = client
   }
 
-  async execution(message, bot) {
+  async execution(message) {
     const queue = []
     let nomeComando = message.args
     // Estrapolo il prefix dal nome del comando se presente.
-    nomeComando = nomeComando.replace(`${bot.conf.prefix}`, '')
+    nomeComando = nomeComando.replace(`${this.client.conf.prefix}`, '')
     // Estrapola tutti i comandi disponibili
-    const commands = bot._botCommands
+    const commands = this.client._botCommands
     if (!nomeComando) {
       Object.entries(commands).filter(([, fn]) => {
         if (fn.displayHelp === 1) {
           if (message.member.roles.cache.some((itm) => fn.access.includes(itm.name))) {
             if (fn.cmd !== 'help') {
               queue.push({
-                cmd: bot.conf.prefix + fn.cmd,
+                cmd: this.client.conf.prefix + fn.cmd,
                 description: fn.description,
               })
             }
@@ -34,16 +35,16 @@ module.exports = class Help extends Commands {
         }
       })
       // Prepara la lista
-      const embeds = this.generateQueueEmbed(queue, bot, commands)
+      const embeds = this.generateQueueEmbed(queue, this.client, commands)
       // Creo embed
-      await this.embedCompose(embeds, message, bot)
+      await this.embedCompose(embeds, message, this.client)
       await message.delete()
     } else {
       let msg = ''
       Object.entries(commands).filter(([, fn]) => {
         if (fn.displayHelp == 1 && (fn.cmd == nomeComando || fn.alias == nomeComando)) {
           if (message.member.roles.cache.some((itm) => fn.access.includes(itm.name))) {
-            msg += `\nComando: **${bot.conf.prefix}${fn.cmd}**\nAlias: **${bot.conf.prefix}${fn.alias}**\n`
+            msg += `\nComando: **${this.client.conf.prefix}${fn.cmd}**\nAlias: **${this.client.conf.prefix}${fn.alias}**\n`
             if (fn.args) {
               msg += `\n**Parametri aggiuntivi: **\n${fn.args}\n`
             }
@@ -56,10 +57,10 @@ module.exports = class Help extends Commands {
           }
         }
       })
-      const emb = new bot._botMessageEmbed()
+      const emb = new this.client._botMessageEmbed()
       if (msg.length == 0) {
         emb.setDescription(
-          `Purtroppo questo comando non esiste.\nUsa **${bot.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
+          `Purtroppo questo comando non esiste.\nUsa **${this.client.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
         )
       }
       emb.setTitle('Bot ufficiale di CodersHub')
@@ -67,15 +68,15 @@ module.exports = class Help extends Commands {
         emb.setDescription(msg)
       } else {
         emb.setDescription(
-          `Purtroppo questo comando non esiste.\nUsa **${bot.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
+          `Purtroppo questo comando non esiste.\nUsa **${this.client.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
         )
       }
       emb.setColor('RANDOM')
       emb.setThumbnail('https://media1.tenor.com/images/0edd53dd2110147b786329c2e24fb1d0/tenor.gif')
       emb.setFooter(
-        `Se hai delle idee o hai un suggerimento per migliorare il gruppo o il bot, invia la tua proposta con il comando ${bot.conf.prefix}proposta`,
+        `Se hai delle idee o hai un suggerimento per migliorare il gruppo o il bot, invia la tua proposta con il comando ${this.client.conf.prefix}proposta`,
       )
-      await this.embedCompose([emb], message, bot)
+      await this.embedCompose([emb], message, this.client)
       await message.delete()
     }
   }
