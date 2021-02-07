@@ -1,6 +1,8 @@
 async function init(client) {
   // Pulisci il canale
   await clearChannel(client, client._botSettings.channel.impostazione_ruoli_id)
+  // Stampa lista canali
+  await printStructureServer(client, client._botSettings.channel.impostazione_ruoli_id)
   // Stampo la parte notifiche
   await roleSelectorGenerator(
     client,
@@ -25,7 +27,6 @@ async function init(client) {
     `Sei uscito dalla categoria`,
     `Sei entrato nella categoria`,
   )
-  await printStructureServer(client, client._botSettings.channel.impostazione_ruoli_id)
 }
 
 async function printStructureServer(client, channel_id) {
