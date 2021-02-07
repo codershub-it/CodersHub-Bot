@@ -127,7 +127,7 @@ module.exports = class Commands {
         ['⬅️', '➡️', '❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) &&
         message.author.id === user.id
       // La durata è di 30000 ms 30s
-      const collector = queueEmbed.createReactionCollector(filter, { time: 30000 })
+      const collector = queueEmbed.createReactionCollector(filter, { time: 60000 })
       // Avvio il collect di eventi
       collector.on('collect', async (reaction, user) => {
         // In base al tipo di reazione effettuo un processo di cambio pagina.
@@ -209,7 +209,7 @@ module.exports = class Commands {
       // Creo il sistema di filtraggio in base alla reaction
       const filter = (reaction, user) =>
         ['❌', 'ℹ️', '❔', '🔄'].includes(reaction.emoji.name) && message.author.id === user.id
-      const collector = queueEmbed.createReactionCollector(filter, { max: 2, time: 15000 })
+      const collector = queueEmbed.createReactionCollector(filter, { max: 2, time: 60000 })
       // Avvio il collect di eventi
       collector.on('collect', async (reaction, user) => {
         // In base al tipo di reazione effettuo un processo di cambio pagina.

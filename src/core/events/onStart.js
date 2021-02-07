@@ -93,9 +93,8 @@ async function printStructureServer(client, channel_id) {
   for (const e of _server) {
     let sub_channel = ''
     for (const se of e.sub_channels) {
-      const __topic = se.topic ? '[' + se.topic + ']' : ''
       const __id = se.type === 'voice' ? '' : '[<#' + se.id + '>]'
-      sub_channel += '---->' + __id + ` [${se.type}] [**${se.name}**] ` + __topic + '\n'
+      sub_channel += '->' + __id + ` [**${se.name}**]\n`
     }
     description += `Categoria **${e.name}** i sotto canali sono:\n`
     description += sub_channel
