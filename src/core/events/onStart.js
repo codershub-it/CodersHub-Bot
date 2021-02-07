@@ -96,7 +96,7 @@ async function printStructureServer(client, channel_id) {
       const __id = se.type === 'voice' ? '' : '[<#' + se.id + '>]'
       sub_channel += '->' + __id + ` [**${se.name}**]\n`
     }
-    description += `Categoria **${e.name}** i sotto canali sono:\n`
+    description += `**${e.name}** canali sono:\n`
     description += sub_channel
   }
   emb.setDescription(description)
