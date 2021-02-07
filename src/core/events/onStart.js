@@ -85,33 +85,33 @@ async function printStructureServer(client, channel_id) {
     }
   }
 
-  let description = ''
-  for (const e of _server) {
-    let sub_channel = ''
-    for (const se of e.sub_channels) {
-      const __id = se.type === 'voice' ? '' : '[<#' + se.id + '>]'
-      sub_channel += '' + __id + ` [**${se.name}**]\n`
-    }
-    description += `**${e.name}** canali sono:\n`
-    description += sub_channel
-  }
-
-  const emb = new client._botMessageEmbed()
-  emb.setTitle(
-    `Le sezioni accessibili con emoji del server CodersHub sono strutturate nel seguente modo`,
-  )
-  emb.setColor('RANDOM')
-  await channel.send(emb).catch((e) => {
-    console.log(e)
-  })
-
-  const arr = description.match(/.{1,2048}/g)
-  for (const chunk of arr) {
-    const embed = new client._botMessageEmbed().setColor('RANDOM').setDescription(chunk)
-    await channel.send(embed).catch((e) => {
-      console.log(e)
-    })
-  }
+  // let description = ''
+  // for (const e of _server) {
+  //   let sub_channel = ''
+  //   for (const se of e.sub_channels) {
+  //     const __id = se.type === 'voice' ? '' : '[<#' + se.id + '>]'
+  //     sub_channel += '' + __id + ` [**${se.name}**]\n`
+  //   }
+  //   description += `**${e.name}** canali sono:\n`
+  //   description += sub_channel
+  // }
+  //
+  // const emb = new client._botMessageEmbed()
+  // emb.setTitle(
+  //   `Le sezioni accessibili con emoji del server CodersHub sono strutturate nel seguente modo`,
+  // )
+  // emb.setColor('RANDOM')
+  // await channel.send(emb).catch((e) => {
+  //   console.log(e)
+  // })
+  //
+  // const arr = description.match(/.{1,2048}/g)
+  // for (const chunk of arr) {
+  //   const embed = new client._botMessageEmbed().setColor('RANDOM').setDescription(chunk)
+  //   await channel.send(embed).catch((e) => {
+  //     console.log(e)
+  //   })
+  // }
 }
 
 async function clearChannel(client, channel_id) {
