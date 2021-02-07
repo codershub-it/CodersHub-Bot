@@ -225,7 +225,9 @@ async function roleSelectorGenerator(
                     client.users
                       .fetch(user.id)
                       .then((_user) => {
-                        _user.send(`${user} ${message_output} ${role.name}`)
+                        _user.send(`${user} ${message_output} ${role.name}`).then((e) => {
+                          e.delete({ timeout: 5000 })
+                        })
                       })
                       .catch((e) => {
                         console.log(e)
@@ -242,7 +244,9 @@ async function roleSelectorGenerator(
                     client.users
                       .fetch(user.id)
                       .then((_user) => {
-                        _user.send(`${user} ${message_input} ${role.name}`)
+                        _user.send(`${user} ${message_input} ${role.name}`).then((e) => {
+                          e.delete({ timeout: 5000 })
+                        })
                       })
                       .catch((e) => {
                         console.log(e)
