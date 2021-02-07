@@ -9,7 +9,7 @@ async function init(client) {
     client._botSettings.channel.impostazione_ruoli_id,
     client._botSettings.server_id,
     client._botSettings.role_notification_index,
-    `per ricevere le`,
+    `Per ricevere le`,
     `Sei uscito dalle notificazioni`,
     `Sei entrato nelle notificazioni`,
   )
@@ -21,7 +21,7 @@ async function init(client) {
     client._botSettings.channel.impostazione_ruoli_id,
     client._botSettings.server_id,
     client._botSettings.role_category_index,
-    `per accedere`,
+    `Per accedere`,
     `Sei uscito dalla categoria`,
     `Sei entrato nella categoria`,
   )
@@ -194,7 +194,7 @@ async function roleSelectorGenerator(
   emb.setFooter(footer)
   let _desc = ''
   roles_items.forEach((role) => {
-    _desc += `${role.emoji_item} -> ${desc_line}: ${role}\n`
+    _desc += `${role.emoji_item} ${desc_line}: ${role}\n`
   })
   emb.setDescription(_desc)
   // Invia il messaggio
