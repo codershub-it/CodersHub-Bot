@@ -1,6 +1,7 @@
 const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
 const onClearNote = require('./core/events/onClearNote')
+const onStart = require('./core/events/onStart')
 const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
@@ -32,6 +33,9 @@ module.exports = class Bot {
         client.user.setActivity(`${process.env.PREFIX}help per maggiori dettagli`).catch((e) => {
           console.log(e)
         })
+        onStart.init(this.client).catch((e) => {
+          console.log(e)
+        })
       }
     })
   }
@@ -57,6 +61,7 @@ module.exports = class Bot {
     const Say = require('./commands/say/say')
     const EightBall = require('./commands/eightBall/eightBall')
     const Opla = require('./commands/opla/opla')
+    const Event = require('./commands/event/event')
 
     return {
       coffee: new Coffee(this.client),
@@ -79,6 +84,7 @@ module.exports = class Bot {
       say: new Say(this.client),
       eight_ball: new EightBall(this.client),
       opla: new Opla(this.client),
+      event: new Event(this.client),
     }
   }
 
