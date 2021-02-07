@@ -100,11 +100,18 @@ async function printStructureServer(client, channel_id) {
   emb.setTitle(
     `Le sezioni accessibili con emoji del server CodersHub sono strutturate nel seguente modo`,
   )
-  emb.setDescription(description)
   emb.setColor('RANDOM')
   await channel.send(emb).catch((e) => {
     console.log(e)
   })
+
+  const arr = description.match(/.{1,2048}/g)
+  for (const chunk of arr) {
+    const embed = new client._botMessageEmbed().setColor('RANDOM').setDescription(chunk)
+    await channel.send(embed).catch((e) => {
+      console.log(e)
+    })
+  }
 }
 
 async function clearChannel(client, channel_id) {
