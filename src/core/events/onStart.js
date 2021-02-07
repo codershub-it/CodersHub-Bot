@@ -85,20 +85,21 @@ async function printStructureServer(client, channel_id) {
     }
   }
 
-  const emb = new client._botMessageEmbed()
-  emb.setTitle(
-    `Le sezioni accessibili con emoji del server CodersHub sono strutturate nel seguente modo`,
-  )
   let description = ''
   for (const e of _server) {
     let sub_channel = ''
     for (const se of e.sub_channels) {
       const __id = se.type === 'voice' ? '' : '[<#' + se.id + '>]'
-      sub_channel += '->' + __id + ` [**${se.name}**]\n`
+      sub_channel += '' + __id + ` [**${se.name}**]\n`
     }
     description += `**${e.name}** canali sono:\n`
     description += sub_channel
   }
+
+  const emb = new client._botMessageEmbed()
+  emb.setTitle(
+    `Le sezioni accessibili con emoji del server CodersHub sono strutturate nel seguente modo`,
+  )
   emb.setDescription(description)
   emb.setColor('RANDOM')
   await channel.send(emb).catch((e) => {
