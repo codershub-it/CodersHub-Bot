@@ -30,8 +30,13 @@ module.exports = class Hint extends Commands {
       emb.setDescription(args)
       emb.setColor('RANDOM')
       emb.setTimestamp()
+      const roleNotification = this.client._botUtility.getRoleFromName(
+        this.client,
+        'Notifica',
+        'Suggerimenti',
+      )
       const messageToSend = await hintChannel
-        .send(`@everyone è arrivata una nuova proposta!`, emb)
+        .send(`${roleNotification} è arrivata una nuova proposta!`, emb)
         .catch((e) => {
           console.log(e)
         })

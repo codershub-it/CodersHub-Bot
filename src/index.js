@@ -6,10 +6,12 @@ const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const noteModel = require('./core/model/note')
+const utility = require('./core/utility/utility')
 
 module.exports = class Bot {
   constructor(client, mongo) {
     client._botSettings = settings
+    client._botUtility = utility
     client._botFetch = fetch
     client._botMessageEmbed = MessageEmbed
     client._botMongo = mongo
@@ -61,7 +63,7 @@ module.exports = class Bot {
     const Say = require('./commands/say/say')
     const EightBall = require('./commands/eightBall/eightBall')
     const Opla = require('./commands/opla/opla')
-    const Event = require('./commands/event/event')
+    // const Event = require('./commands/event/event')
 
     return {
       coffee: new Coffee(this.client),
@@ -84,7 +86,7 @@ module.exports = class Bot {
       say: new Say(this.client),
       eight_ball: new EightBall(this.client),
       opla: new Opla(this.client),
-      event: new Event(this.client),
+      // event: new Event(this.client),
     }
   }
 

@@ -29,7 +29,11 @@ module.exports = class Event extends Commands {
     let objParam = {}
 
     // Vado ad estrarre il Role di un specifico nome
-    const roleNotification = this.getRoleFromName('Notifica', 'Eventi')
+    const roleNotification = this.client._botUtility.getRoleFromName(
+      this.client,
+      'Notifica',
+      'Eventi',
+    )
 
     try {
       objParam = JSON.parse(message.args)
