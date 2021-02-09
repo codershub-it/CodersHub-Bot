@@ -11,7 +11,7 @@ module.exports = class Notes extends Commands {
     this.description =
       'Questo comando mostra tutte le note presenti in un canale mostrando un lista dinamica.'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.modelNote = note
     this.client = client

@@ -9,7 +9,7 @@ module.exports = class Help extends Commands {
     this.description =
       'Usa questo comando da solo per avere la lista tutti i comandi. Aggiungendo il nome del comando hai la descrizione dettagliata'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }
@@ -24,13 +24,20 @@ module.exports = class Help extends Commands {
     if (!nomeComando) {
       Object.entries(commands).filter(([, fn]) => {
         if (fn.displayHelp === 1) {
-          if (message.member.roles.cache.some((itm) => fn.access.includes(itm.name))) {
-            if (fn.cmd !== 'help') {
-              queue.push({
-                cmd: this.client.conf.prefix + fn.cmd,
-                description: fn.description,
-              })
+          if (fn.access.length > 0) {
+            if (message.member.roles.cache.some((itm) => fn.access.includes(itm.id))) {
+              if (fn.cmd !== 'help') {
+                queue.push({
+                  cmd: this.client.conf.prefix + fn.cmd,
+                  description: fn.description,
+                })
+              }
             }
+          } else if (fn.cmd !== 'help') {
+            queue.push({
+              cmd: this.client.conf.prefix + fn.cmd,
+              description: fn.description,
+            })
           }
         }
       })
@@ -43,7 +50,20 @@ module.exports = class Help extends Commands {
       let msg = ''
       Object.entries(commands).filter(([, fn]) => {
         if (fn.displayHelp == 1 && (fn.cmd == nomeComando || fn.alias == nomeComando)) {
-          if (message.member.roles.cache.some((itm) => fn.access.includes(itm.name))) {
+          if (fn.access.length > 0) {
+            if (!message.member.roles.cache.some((itm) => fn.access.includes(itm.id))) {
+              msg += `\nComando: **${this.client.conf.prefix}${fn.cmd}**\nAlias: **${this.client.conf.prefix}${fn.alias}**\n`
+              if (fn.args) {
+                msg += `\n**Parametri aggiuntivi: **\n${fn.args}\n`
+              }
+              if (fn.description) {
+                msg += `\n**Descrizione: **\n${fn.description}\n`
+              }
+              if (fn.example) {
+                msg += `\n**Esempio: **\n${fn.example}\n`
+              }
+            }
+          } else {
             msg += `\nComando: **${this.client.conf.prefix}${fn.cmd}**\nAlias: **${this.client.conf.prefix}${fn.alias}**\n`
             if (fn.args) {
               msg += `\n**Parametri aggiuntivi: **\n${fn.args}\n`
@@ -58,11 +78,6 @@ module.exports = class Help extends Commands {
         }
       })
       const emb = new this.client._botMessageEmbed()
-      if (msg.length == 0) {
-        emb.setDescription(
-          `Purtroppo questo comando non esiste.\nUsa **${this.client.conf.prefix}help** per vedere tutti i miei comandi :kissing_heart: `,
-        )
-      }
       emb.setTitle('Bot ufficiale di CodersHub')
       if (msg.length > 0) {
         emb.setDescription(msg)

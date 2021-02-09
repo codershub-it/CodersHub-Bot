@@ -11,7 +11,7 @@ module.exports = class Poll extends Commands {
     this.example = `${client.conf.prefix}sondaggio "che tempo fa oggi?" "bello" "brutto"`
     this.description = 'Questo comando serve a creare dei sondaggi'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }

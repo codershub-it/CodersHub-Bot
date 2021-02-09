@@ -9,7 +9,7 @@ module.exports = class Opla extends Commands {
     this.example = ``
     this.description = 'Per leggere una **perla** random del buon Fabio'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }

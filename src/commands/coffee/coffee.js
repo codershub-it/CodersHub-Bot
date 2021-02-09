@@ -9,7 +9,7 @@ module.exports = class Coffee extends Commands {
     this.example = `${client.conf.prefix}caffè @nomeutente`
     this.description = 'Ideala per bere un caffè in compagnia o offerto dal bot 👊🏻'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }

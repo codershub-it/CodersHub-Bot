@@ -9,7 +9,7 @@ module.exports = class Hint extends Commands {
     this.example = `${client.conf.prefix}proposta creare un canale per discutere di nodejs e delle sue funzinoalità`
     this.description = 'Suggerimenti per migliorare il server di CodersHub'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }
