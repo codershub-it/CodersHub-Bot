@@ -27,7 +27,7 @@ function readMessage(message, client) {
   // Questo parametro mi serve per capire se il comando non esiste
   let presence_cmd = 0
   // Estraggo tutti i comandi inseriti, verifico il permesso e avvio il comando.
-  Object.entries(client._botCommands).forEach(([, cmd]) => {
+  Object.values(client._botCommands).forEach((cmd) => {
     if (cmd.cmd === message.cmd || cmd.alias === message.cmd) {
       // Permesso di accesso al comando.
       const rules_access = cmd.access

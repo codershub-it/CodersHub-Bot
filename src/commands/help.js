@@ -22,7 +22,7 @@ module.exports = class Help extends Commands {
     // Estrapola tutti i comandi disponibili
     const commands = this.client._botCommands
     if (!nomeComando) {
-      Object.entries(commands).filter(([, fn]) => {
+      Object.values(commands).filter((fn) => {
         if (fn.displayHelp === 1) {
           if (fn.access.length > 0) {
             if (message.member.roles.cache.some((itm) => fn.access.includes(itm.id))) {
@@ -48,7 +48,7 @@ module.exports = class Help extends Commands {
       await message.delete()
     } else {
       let msg = ''
-      Object.entries(commands).filter(([, fn]) => {
+      Object.values(commands).filter((fn) => {
         if (fn.displayHelp == 1 && (fn.cmd == nomeComando || fn.alias == nomeComando)) {
           if (fn.access.length > 0) {
             if (!message.member.roles.cache.some((itm) => fn.access.includes(itm.id))) {

@@ -47,25 +47,15 @@ module.exports = class UpdateRole extends Commands {
               this.client._botSettings.role_notification_index,
             )
 
-            let _presence_category = 0
-            // Primo ciclo
-            for (const role_category of _list_roles_category) {
-              // Conto le presenze di quel ruolo
-              if (_roles.length > 0 && _roles.includes(role_category.id) >= 0) {
-                _presence_category++
-              }
-            }
-            let _presence_notification = 0
-            // Primo ciclo
-            for (const role_notification of _list_roles_notification) {
-              // Conto le presenze di quel ruolo
-              if (_roles.length > 0 && _roles.includes(role_notification.id) >= 0) {
-                _presence_notification++
-              }
-            }
+            const presence = _roles.some(
+              (role_id) =>
+                _list_roles_category.some((role) => role.id === role_id) ||
+                _list_roles_notification.some((role) => role.id === role_id),
+            )
+            console.log(member.user.username, presence)
 
-            // Se non ha un ruolo
-            if (_presence_notification == 0 && _presence_category == 0) {
+            if (!presence) {
+              // Se non ha un ruolo
               try {
                 const settingsRoles = roles.filter(
                   (r) =>
