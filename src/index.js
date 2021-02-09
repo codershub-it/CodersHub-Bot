@@ -7,6 +7,7 @@ const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const noteModel = require('./core/model/note')
 const utility = require('./core/utility/utility')
+const onGuildMemberAdd = require('./core/events/onGuilMemberAdd')
 
 module.exports = class Bot {
   constructor(client, mongo) {
@@ -98,5 +99,6 @@ module.exports = class Bot {
     onError.init(this.client)
     onMessage.init(this.client)
     onClearNote.init(this.client)
+    onGuildMemberAdd.init(this.client)
   }
 }
