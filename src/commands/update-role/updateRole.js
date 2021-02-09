@@ -24,19 +24,29 @@ module.exports = class UpdateRole extends Commands {
     // Estraggo tutti i membri
     message.guild.members
       .fetch()
-      .then((guildMember) => {
+      .then(async (guildMember) => {
         // Estraggo i ruoli dell'utente nel momento della fetch
         const _guildMembers = guildMember.array()
+        const guild = this.client.guilds.cache.get(this.client._botSettings.server_id)
+        const roles = guild.roles.cache.array()
+
         for (const member of _guildMembers) {
           if (!member.user.bot) {
             let _roles = []
             // Popolo _roles
             if (member._roles) _roles = member._roles
+
             // La lista dei roles corrispettivi category
             const _list_roles_category = this.client._botUtility.getRoleFromNameRaw(
               this.client,
               this.client._botSettings.role_category_index,
             )
+            // La lista dei role corrispettivi notification
+            const _list_roles_notification = this.client._botUtility.getRoleFromNameRaw(
+              this.client,
+              this.client._botSettings.role_notification_index,
+            )
+
             let _presence_category = 0
             // Primo ciclo
             for (const role_category of _list_roles_category) {
@@ -45,18 +55,6 @@ module.exports = class UpdateRole extends Commands {
                 _presence_category++
               }
             }
-            // Se non ha un ruolo
-            if (_presence_category == 0) {
-              for (const _role_category of _list_roles_category) {
-                // Aggiungo il ruolo corrispettivo
-                member.roles.add(_role_category)
-              }
-            }
-            // La lista dei role corrispettivi notification
-            const _list_roles_notification = this.client._botUtility.getRoleFromNameRaw(
-              this.client,
-              this.client._botSettings.role_notification_index,
-            )
             let _presence_notification = 0
             // Primo ciclo
             for (const role_notification of _list_roles_notification) {
@@ -65,11 +63,18 @@ module.exports = class UpdateRole extends Commands {
                 _presence_notification++
               }
             }
+
             // Se non ha un ruolo
-            if (_presence_notification == 0) {
-              for (const _role_notification of _list_roles_notification) {
-                // Aggiungo il ruolo corrispettivo
-                member.roles.add(_role_notification)
+            if (_presence_notification == 0 && _presence_category == 0) {
+              try {
+                const settingsRoles = roles.filter(
+                  (r) =>
+                    r.name.includes(this.client._botSettings.role_category_index) ||
+                    r.name.includes(this.client._botSettings.role_notification_index),
+                )
+                await member.edit({ roles: settingsRoles })
+              } catch (e) {
+                console.log("Errore nell'assegnazione dei ruoli", e)
               }
             }
           }

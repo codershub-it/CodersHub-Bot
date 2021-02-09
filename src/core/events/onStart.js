@@ -1,32 +1,36 @@
 async function init(client) {
-  // Pulisci il canale
-  await clearChannel(client, client._botSettings.channel.impostazione_ruoli_id)
-  // Stampa lista canali
-  await printStructureServer(client, client._botSettings.channel.impostazione_ruoli_id)
-  // Stampo la parte notifiche
-  await roleSelectorGenerator(
-    client,
-    `Seleziona quali notifiche vuoi ricevere cliccando sulle emoji sotto questo messaggio. Le opzioni disponibili sono:`,
-    `Clicca su una delle emoji sottostanti per attivare o disattivare la ricezione delle notifiche.\nUsa il comando ${client.conf.prefix}notification per vedere in quali notifiche hai accesso o clicca sulla tua immagine profilo`,
-    client._botSettings.channel.impostazione_ruoli_id,
-    client._botSettings.server_id,
-    client._botSettings.role_notification_index,
-    `Per ricevere le`,
-    `Sei uscito dalle notificazioni`,
-    `Sei entrato nelle notificazioni`,
-  )
-  // Stampo la parte categorie
-  await roleSelectorGenerator(
-    client,
-    `Seleziona quali categorie vuoi accedere cliccando sulle emoji sotto questo messaggio. Le opzioni disponibili sono:`,
-    `Clicca su una delle emoji sottostanti per attivare o disattivare l'accesso ad una categoria.\nUsa il comando ${client.conf.prefix}category per vedere in quali categorie hai accesso o clicca sulla tua immagine profilo.`,
-    client._botSettings.channel.impostazione_ruoli_id,
-    client._botSettings.server_id,
-    client._botSettings.role_category_index,
-    `Per accedere`,
-    `Sei uscito dalla categoria`,
-    `Sei entrato nella categoria`,
-  )
+  try {
+    // Pulisci il canale
+    await clearChannel(client, client._botSettings.channel.impostazione_ruoli_id)
+    // Stampa lista canali
+    await printStructureServer(client, client._botSettings.channel.impostazione_ruoli_id)
+    // Stampo la parte notifiche
+    await roleSelectorGenerator(
+      client,
+      `Seleziona quali notifiche vuoi ricevere cliccando sulle emoji sotto questo messaggio. Le opzioni disponibili sono:`,
+      `Clicca su una delle emoji sottostanti per attivare o disattivare la ricezione delle notifiche.\nUsa il comando ${client.conf.prefix}notification per vedere in quali notifiche hai accesso o clicca sulla tua immagine profilo`,
+      client._botSettings.channel.impostazione_ruoli_id,
+      client._botSettings.server_id,
+      client._botSettings.role_notification_index,
+      `Per ricevere le`,
+      `Sei uscito dalle notificazioni`,
+      `Sei entrato nelle notificazioni`,
+    )
+    // Stampo la parte categorie
+    await roleSelectorGenerator(
+      client,
+      `Seleziona quali categorie vuoi accedere cliccando sulle emoji sotto questo messaggio. Le opzioni disponibili sono:`,
+      `Clicca su una delle emoji sottostanti per attivare o disattivare l'accesso ad una categoria.\nUsa il comando ${client.conf.prefix}category per vedere in quali categorie hai accesso o clicca sulla tua immagine profilo.`,
+      client._botSettings.channel.impostazione_ruoli_id,
+      client._botSettings.server_id,
+      client._botSettings.role_category_index,
+      `Per accedere`,
+      `Sei uscito dalla categoria`,
+      `Sei entrato nella categoria`,
+    )
+  } catch (e) {
+    console.log('Errore al onStart Aggiunta dei selettori', e)
+  }
 }
 
 async function printStructureServer(client, channel_id) {
