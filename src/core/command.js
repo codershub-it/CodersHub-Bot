@@ -76,6 +76,10 @@ module.exports = class Commands {
     }
   }
 
+  sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
   /**
    * Testo di come utilizzare il bot
    * @returns {string}

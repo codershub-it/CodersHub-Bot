@@ -22,6 +22,7 @@ module.exports = class UpdateRole extends Commands {
    */
   async execution(message) {
     // Estraggo tutti i membri
+    message.reply('```Start Aggiornamento```')
     message.guild.members
       .fetch()
       .then(async (guildMember) => {
@@ -29,7 +30,6 @@ module.exports = class UpdateRole extends Commands {
         const _guildMembers = guildMember.array()
         const guild = this.client.guilds.cache.get(this.client._botSettings.server_id)
         const roles = guild.roles.cache.array()
-
         for (const member of _guildMembers) {
           if (!member.user.bot) {
             let _roles = []
@@ -65,9 +65,13 @@ module.exports = class UpdateRole extends Commands {
                 await member.edit({ roles: settingsRoles })
               } catch (e) {
                 console.log("Errore nell'assegnazione dei ruoli", e)
+                message.reply('```Non completato guardare log```')
+                break
               }
             }
           }
+          // Aspetto 1s
+          await this.sleep(1000)
         }
         message.reply('```Server Aggiornato```')
       })
