@@ -37,16 +37,10 @@ function readMessage(message, client) {
         let _roles = []
         // Estraggo i roles utente che ha scritto il messaggio
         if (message.member._roles) _roles = message.member._roles
-        let _presence_role = 0
-        // Ciclo role
-        for (const role_id of rules_access) {
-          // Conto le presenze di quel ruolo
-          if (_roles.length > 0 && _roles.includes(role_id) >= 0) {
-            _presence_role++
-          }
-        }
         // Verifico se ha gli accessi
-        if (_presence_role == 0) {
+        const presence_role = rules_access.some((role_id) => _roles.includes(role_id))
+        // Stampo l'errore di accesso
+        if (!presence_role) {
           presence_cmd++
           return message.reply('mi dispiace ma non hai i permessi per inviare questo comando')
         }
