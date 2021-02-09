@@ -12,7 +12,7 @@ module.exports = class Note extends Commands {
       'una traccia di tutti i messaggi importanti, tutti gli utenti possono aggiungere note, sarà cura dello' +
       'staff approvare la note'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.modelNote = note
     this.client = client

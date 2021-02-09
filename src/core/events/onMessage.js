@@ -23,27 +23,43 @@ function readMessage(message, client) {
 
   if (message.content[0] !== client.conf.prefix) return
   message = extendMessage(client, message)
-  let x = 0
-  /**
-   * Estraggo tutti i comandi inseriti, verifico il permesso e avvio il comando.
-   */
+
+  // Questo parametro mi serve per capire se il comando non esiste
+  let presence_cmd = 0
+  // Estraggo tutti i comandi inseriti, verifico il permesso e avvio il comando.
   Object.entries(client._botCommands).forEach(([, cmd]) => {
     if (cmd.cmd === message.cmd || cmd.alias === message.cmd) {
       // Permesso di accesso al comando.
-      const rules = cmd.access
-      if (!message.member.roles.cache.some((itm) => rules.includes(itm.name))) {
-        x++
-        return message.reply('mi dispiace ma non hai i permessi per inviare questo comando')
+      const rules_access = cmd.access
+      // Verifico se ci sono dei limiti di accesso
+      if (rules_access.length > 0) {
+        // Gestione ruolo e permessi di uso del comando
+        let _roles = []
+        // Estraggo i roles utente che ha scritto il messaggio
+        if (message.member._roles) _roles = message.member._roles
+        let _presence_role = 0
+        // Ciclo role
+        for (const role_id of rules_access) {
+          // Conto le presenze di quel ruolo
+          if (_roles.length > 0 && _roles.includes(role_id) >= 0) {
+            _presence_role++
+          }
+        }
+        // Verifico se ha gli accessi
+        if (_presence_role == 0) {
+          presence_cmd++
+          return message.reply('mi dispiace ma non hai i permessi per inviare questo comando')
+        }
       }
       // Start command
       cmd.execution(message).catch((e) => {
         console.log(e)
       })
-      x++
+      presence_cmd++
     }
   })
   // Se non ci sono risposte positive
-  if (x == 0) {
+  if (presence_cmd == 0) {
     const emb = new client._botMessageEmbed()
       .setTitle(`Hei ${message.author.username} sicuro di aver scritto giusto? :scream:`)
       .setColor('RANDOM')
@@ -57,7 +73,7 @@ function readMessage(message, client) {
 }
 
 /**
- * Inizializzatore della pagina
+ * Init della pagina
  * @param client
  */
 function init(client) {

@@ -9,7 +9,7 @@ module.exports = class EightBall extends Commands {
     this.example = `${client.conf.prefix}PallaOtto Oggi riuscirò a fare quello?`
     this.description = 'La palla della fortuna 🚀'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     ;(this.displayHelp = 1), (this.client = client)
   }
 

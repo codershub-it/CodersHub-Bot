@@ -5,10 +5,10 @@ module.exports = {
    * Tipologie di utenti
    */
   rules: {
-    everyone: '@everyone',
-    Admin: 'Admin',
-    Moderatore: 'Moderatore',
-    Collaboratore: 'Collaboratore',
+    everyone: process.env.ROLE_EVERYONE_ID,
+    Admin: process.env.ROLE_ADMIN_ID,
+    Moderatore: process.env.ROLE_MODERATORE_ID,
+    Collaboratore: process.env.ROLE_COLLABORATORE_ID,
   },
   /**
    * Tipologia di task

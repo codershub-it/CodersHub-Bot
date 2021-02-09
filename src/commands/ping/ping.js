@@ -9,7 +9,7 @@ module.exports = class Ping extends Commands {
     this.example = ''
     this.description = 'Mostra il tempo di risposta del Bot.'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }

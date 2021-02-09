@@ -12,7 +12,7 @@ module.exports = class Code extends Commands {
       'Il tipo di linguaggio deve essere inserito tra parentesi quadre (es:[php]) prima del tuo codice.\n\n' +
       '**Attenzione** il carattere ` (apostrofo rovesciato) verrà sostituito con §'
     this.timer = 0
-    this.access = [client._botSettings.rules.everyone]
+    this.access = []
     this.displayHelp = 1
     this.client = client
   }

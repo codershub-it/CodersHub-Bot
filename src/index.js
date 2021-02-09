@@ -63,6 +63,8 @@ module.exports = class Bot {
     const Say = require('./commands/say/say')
     const EightBall = require('./commands/eightBall/eightBall')
     const Opla = require('./commands/opla/opla')
+    const Eval = require('./commands/eval/eval')
+    const UpdateRole = require('./commands/update-role/updateRole')
     // const Event = require('./commands/event/event')
 
     return {
@@ -86,6 +88,8 @@ module.exports = class Bot {
       say: new Say(this.client),
       eight_ball: new EightBall(this.client),
       opla: new Opla(this.client),
+      eval: new Eval(this.client),
+      update_role: new UpdateRole(this.client),
       // event: new Event(this.client),
     }
   }
