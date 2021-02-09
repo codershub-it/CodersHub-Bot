@@ -47,15 +47,15 @@ module.exports = class UpdateRole extends Commands {
               this.client._botSettings.role_notification_index,
             )
 
+            // Verifico la presenza dei ruoli
             const presence = _roles.some(
               (role_id) =>
                 _list_roles_category.some((role) => role.id === role_id) ||
                 _list_roles_notification.some((role) => role.id === role_id),
             )
-            console.log(member.user.username, presence)
 
+            // Se non ha un ruolo
             if (!presence) {
-              // Se non ha un ruolo
               try {
                 const settingsRoles = roles.filter(
                   (r) =>
