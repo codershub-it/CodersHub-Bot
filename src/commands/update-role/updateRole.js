@@ -27,6 +27,11 @@ module.exports = class UpdateRole extends Commands {
       .fetch()
       .then(async (guildMember) => {
         // Estraggo i ruoli dell'utente nel momento della fetch
+        const blacklist = [
+          this.client._botSettings.rules.Admin,
+          this.client._botSettings.rules.Moderatore,
+          this.client._botSettings.rules.Collaboratore,
+        ]
         const _guildMembers = guildMember.array()
         const guild = this.client.guilds.cache.get(this.client._botSettings.server_id)
         const roles = guild.roles.cache.array()
@@ -35,6 +40,11 @@ module.exports = class UpdateRole extends Commands {
             let _roles = []
             // Popolo _roles
             if (member._roles) _roles = member._roles
+
+            // Verifico la black list
+            const presence_role_bl = _roles.some((role_id) => blacklist.includes(role_id))
+            // Salto il ciclo
+            if (presence_role_bl) continue
 
             // La lista dei roles corrispettivi category
             const _list_roles_category = this.client._botUtility.getRoleFromNameRaw(
