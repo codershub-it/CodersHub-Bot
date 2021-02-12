@@ -25,6 +25,7 @@ module.exports = {
     suggerimenti_id: process.env.SUGGERIMENTI_CANALE,
     comandi_bot_id: process.env.COMANDI_BOT_CANALE,
     impostazione_ruoli_id: process.env.IMPOSTAIZONE_RUOLI_CANALE,
+    event_id: process.env.EVENT_CANALE,
   },
   server_id: process.env.SERVER_ID,
   role_notification_index: process.env.ROLE_NOTIFICATION_INDEX,

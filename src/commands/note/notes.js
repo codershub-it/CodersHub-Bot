@@ -4,8 +4,8 @@ const numberToEmoji = require('../../core/utility/numberToEmoji')
 module.exports = class Notes extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'Notes'
-    this.alias = 'notes'
+    this.cmd = 'notes'
+    this.alias = 'Notes'
     this.args = 'Puoi scrivere dopo lo spazio la chiave di ricerca'
     this.example = `${client.conf.prefix}Notes Angular`
     this.description =
@@ -30,13 +30,9 @@ module.exports = class Notes extends Commands {
       })
       // Se non trova nulla...
       if (notes.length == 0) {
-        const embed = new this.client._botMessageEmbed()
-        embed.setTitle('404')
-        embed.setDescription(
-          `Purtroppo non ho trovato nulla con la chiave di ricerca: ${message.args}`,
-        )
-        embed.setColor('RANDOM')
-        message.reply(embed)
+        message
+          .reply(`Purtroppo non ho trovato nulla con la chiave di ricerca: ${message.args}`)
+          .then((m) => m.delete({ timeout: 10000 }))
         message.delete()
         return
       }
@@ -46,10 +42,9 @@ module.exports = class Notes extends Commands {
       })
       // Se non trova nulla...
       if (notes.length == 0) {
-        const embed = new this.client._botMessageEmbed()
-        embed.setDescription(`Purtroppo non ci sono note salvate`)
-        embed.setColor('RANDOM')
-        message.reply(embed)
+        message
+          .reply(`Purtroppo non ci sono note salvate`)
+          .then((m) => m.delete({ timeout: 10000 }))
         message.delete()
         return
       }

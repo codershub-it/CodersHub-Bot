@@ -4,7 +4,7 @@ const numberToEmoji = require('../../core/utility/numberToEmoji')
 module.exports = class GetNotesModeration extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'NotesMod'
+    this.cmd = 'notesMod'
     this.alias = 'notesmod'
     this.args = "[inserisci l'id della nota da attivare]"
     this.example = `${client.conf.prefix} 3057392487254763492347029`
@@ -27,29 +27,21 @@ module.exports = class GetNotesModeration extends Commands {
       const noteID = message.args
       try {
         await this.modelNote.findByIdAndUpdate(noteID, { status: true })
-        const embed = new this.client._botMessageEmbed()
-        embed.setDescription(`Abilitato con successo`)
-        embed.setColor('RANDOM')
-        message.reply(embed)
+        message.reply(`Abilitato con successo`).then((m) => m.delete({ timeout: 10000 }))
         message.delete()
+        return
       } catch (e) {
-        const embed = new this.client._botMessageEmbed()
-        embed.setDescription(`Abilitazione non riuscita`)
-        embed.setColor('RANDOM')
-        message.reply(embed)
+        message.reply(`Abilitazione non riuscita`).then((m) => m.delete({ timeout: 10000 }))
         message.delete()
+        return
       }
-      return
     }
     // Mostro la lista
     let notes = []
     notes = await this.modelNote.find({}).where('status', false)
     // Se non trova nulla...
     if (notes.length == 0) {
-      const embed = new this.client._botMessageEmbed()
-      embed.setDescription(`Non ci sono note da gestire.`)
-      embed.setColor('RANDOM')
-      message.reply(embed)
+      message.reply(`Non ci sono note da gestire.`).then((m) => m.delete({ timeout: 10000 }))
       message.delete()
       return
     }

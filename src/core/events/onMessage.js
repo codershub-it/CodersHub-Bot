@@ -16,10 +16,35 @@ const extendMessage = (client, message) => {
  * Legge i messaggi ricevuti e ne gestisce se sono comandi
  * @param message
  * @param client
+ * @param queueModel
  * @returns {*}
  */
-function readMessage(message, client) {
+async function readMessage(message, client, queueModel) {
+  // Controlla se è un bot
   if (message.author.bot) return
+
+  // Ciclo Queues
+  if (message.content[0] !== client.conf.prefix) {
+    await queueModel
+      .getQueue(message.channel.id, message.author.id, queueModel.event.message)
+      .then((docs) => {
+        if (docs.length > 0) {
+          docs.forEach((doc) => {
+            Object.values(client._botCommands).forEach((cmd) => {
+              if (doc.cmd == cmd.cmd && new Date() < new Date(doc.date_end)) {
+                cmd.queuesMessage(message, doc).catch((e) => {
+                  console.log(e)
+                })
+              }
+              return
+            })
+          })
+        }
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
 
   if (message.content[0] !== client.conf.prefix) return
   message = extendMessage(client, message)
@@ -64,15 +89,19 @@ function readMessage(message, client) {
       console.log(e)
     })
   }
+  // Ciclo di pulizia queues scadute
+  // queueModel.cleanQueues().catch((e) => {
+  //   console.log(e)
+  // })
 }
 
 /**
  * Init della pagina
  * @param client
  */
-function init(client) {
+function init(client, queueModel) {
   client.on('message', (message) => {
-    readMessage(message, client)
+    readMessage(message, client, queueModel)
   })
 }
 module.exports = { init }

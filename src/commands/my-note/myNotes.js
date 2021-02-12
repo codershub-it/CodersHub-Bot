@@ -1,18 +1,19 @@
 const Commands = require('../../core/command')
 const numberToEmoji = require('../../core/utility/numberToEmoji')
 
-module.exports = class AllNotes extends Commands {
+module.exports = class MyNotes extends Commands {
   constructor(client, note) {
     super(client)
-    this.cmd = 'allNotes'
-    this.alias = 'allnotes'
+    this.cmd = 'myNotes'
+    this.alias = 'mynotes'
     this.args = 'Puoi scrivere dopo lo spazio la chiave di ricerca'
-    this.example = `${client.conf.prefix}allNotes Angular`
-    this.description = 'Questo comando mostra tutte le note presenti mostrando lista dinamica.'
+    this.example = `${client.conf.prefix}mynotes Angular`
+    this.description =
+      'Questo comando mostra tutte le note personali presenti mostrando lista dinamica.'
     this.timer = 0
     this.access = []
     this.displayHelp = 1
-    this.modelNote = note
+    this.myNoteModel = note
     this.client = client
   }
 
@@ -20,8 +21,8 @@ module.exports = class AllNotes extends Commands {
     let notes = []
     if (message.args) {
       // Estrae i dati con il motore di ricerca
-      notes = await this.modelNote.find({
-        $and: [{ note: new RegExp(message.args, 'i') }, { status: true }],
+      notes = await this.myNoteModel.find({
+        $and: [{ note: new RegExp(message.args, 'i') }, { author_id: message.author.id }],
       })
       // Se non trova nulla...
       if (notes.length == 0) {
@@ -32,18 +33,18 @@ module.exports = class AllNotes extends Commands {
         return
       }
     } else {
-      notes = await this.modelNote.find({ status: true })
+      notes = await this.myNoteModel.find({ author_id: message.author.id })
       // Se non trova nulla...
       if (notes.length == 0) {
         message
-          .reply(`Purtroppo non ci sono note salvate`)
+          .reply('Purtroppo non ci sono tue note salvate')
           .then((m) => m.delete({ timeout: 10000 }))
         message.delete()
         return
       }
     }
     const embeds = this.generateQueueEmbed(notes, this.client, message.args)
-    await this.embedCompose(embeds, message, this.client)
+    await this.personalEmbedCompose(embeds, message, this.client)
     await message.delete()
   }
 
@@ -73,7 +74,7 @@ module.exports = class AllNotes extends Commands {
       if (args) {
         const embed = new client._botMessageEmbed()
           .setDescription(
-            `** 🗒 Lista Note trovate ${numberToEmoji.toEmoji(
+            `** 🗒 La tua lista note, trovati ${numberToEmoji.toEmoji(
               queue.length,
             )} elementi con chiave di ricerca: ${args}**\n${line} `,
           )
@@ -83,7 +84,7 @@ module.exports = class AllNotes extends Commands {
       } else {
         const embed = new client._botMessageEmbed()
           .setDescription(
-            `** 🗒 Lista Note trovate ${numberToEmoji.toEmoji(queue.length)} elementi **\n${line}`,
+            `** 🗒 La tua lista note, ${numberToEmoji.toEmoji(queue.length)} elementi **\n${line}`,
           )
           .setFooter('Premi il simbolo ❌  per eliminare questo messaggio')
           .setColor('RANDOM')

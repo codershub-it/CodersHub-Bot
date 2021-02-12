@@ -6,6 +6,8 @@ const settings = require('./core/settings')
 const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const noteModel = require('./core/model/note')
+const myNoteModel = require('./core/model/myNote')
+const queueModel = require('./core/model/queue')
 const utility = require('./core/utility/utility')
 const onGuildMemberAdd = require('./core/events/onGuilMemberAdd')
 
@@ -66,9 +68,25 @@ module.exports = class Bot {
     const Opla = require('./commands/opla/opla')
     const Eval = require('./commands/eval/eval')
     const UpdateRole = require('./commands/update-role/updateRole')
-    // const Event = require('./commands/event/event')
+    const Event = require('./commands/event/event')
+    const MyNote = require('./commands/my-note/myNote')
+    const MyNotes = require('./commands/my-note/myNotes')
+    const Image = require('./commands/test/image')
 
     return {
+      // My note
+      mynote: new MyNote(this.client, myNoteModel),
+      mynotes: new MyNotes(this.client, myNoteModel),
+      // Notes
+      note: new Note(this.client, noteModel),
+      notes: new Notes(this.client, noteModel),
+      all_notes: new AllNotes(this.client, noteModel),
+      del_note: new DelNote(this.client, noteModel),
+      get_notes_moderation: new GetNotesModeration(this.client, noteModel),
+      // Altro
+      say: new Say(this.client),
+      poll: new Poll(this.client),
+      hint: new Hint(this.client),
       coffee: new Coffee(this.client),
       ban: new Ban(this.client),
       kick: new Kick(this.client),
@@ -78,26 +96,19 @@ module.exports = class Bot {
       help: new Help(this.client),
       ping: new Ping(this.client),
       code: new Code(this.client),
-      hint: new Hint(this.client),
-      poll: new Poll(this.client),
       demo: new Demo(this.client),
-      note: new Note(this.client, noteModel),
-      notes: new Notes(this.client, noteModel),
-      all_notes: new AllNotes(this.client, noteModel),
-      del_note: new DelNote(this.client, noteModel),
-      get_notes_moderation: new GetNotesModeration(this.client, noteModel),
-      say: new Say(this.client),
       eight_ball: new EightBall(this.client),
       opla: new Opla(this.client),
       eval: new Eval(this.client),
       update_role: new UpdateRole(this.client),
-      // event: new Event(this.client),
+      event: new Event(this.client, queueModel),
+      image: new Image(this.client),
     }
   }
 
   async loadCore() {
     onError.init(this.client)
-    onMessage.init(this.client)
+    onMessage.init(this.client, queueModel)
     onClearNote.init(this.client)
     onGuildMemberAdd.init(this.client)
   }

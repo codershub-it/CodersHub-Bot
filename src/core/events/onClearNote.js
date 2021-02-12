@@ -1,4 +1,5 @@
 const noteModel = require('../model/note')
+const myNoteModel = require('../model/myNote')
 /**
  * Questa pagina intercetta gli eventi di cancellazione dei messaggi e canali.
  * Quando viene eliminato un canale o un messaggio, chiama il db e elimina gli
@@ -22,10 +23,31 @@ function init(client) {
           if (err) console.log(err.message)
         },
       )
+      myNoteModel.deleteMany(
+        {
+          guild_id: raw.d.guild_id,
+          channel_id: raw.d.channel_id,
+          message_id: raw.d.id,
+        },
+        {},
+        (err) => {
+          if (err) console.log(err.message)
+        },
+      )
     }
     // Quando viene eliminato un canale
     if (raw.t === 'CHANNEL_DELETE') {
       noteModel.deleteMany(
+        {
+          guild_id: raw.d.guild_id,
+          channel_id: raw.d.id,
+        },
+        {},
+        (err) => {
+          if (err) console.log(err.message)
+        },
+      )
+      myNoteModel.deleteMany(
         {
           guild_id: raw.d.guild_id,
           channel_id: raw.d.id,
