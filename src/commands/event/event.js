@@ -1,13 +1,12 @@
 const Commands = require('../../core/command')
 
 module.exports = class Event extends Commands {
-  constructor(client, queue) {
+  constructor(client, event) {
     super(client)
     this.cmd = 'Event'
     this.alias = 'event'
-    this.args =
-      '{ "name": String, "description": String, "link": String (Optional), "img": String (Optional), "date_event": String, "days_for_close": Int}'
-    this.example = `${client.conf.prefix}Event { "name": "Test", "description": "Description test", "link": "www.test.com", "img": "test.com/img.png", "date_event": "11.03.2022 11:33", "days_for_close": 5 }`
+    this.args = ''
+    this.example = ''
     this.description = 'Questo comando crea un evento'
     this.timer = 0
     this.access = [
@@ -17,7 +16,7 @@ module.exports = class Event extends Commands {
     ]
     this.displayHelp = 1
     this.client = client
-    this.queue = queue
+    this.event = event
   }
 
   /**
@@ -26,41 +25,45 @@ module.exports = class Event extends Commands {
    * @param bot
    */
   async execution(message) {
-    await this.queue
-      .getQueue(this.cmd, message.channel.id, message.author.id, this.queue.event.message)
+    await this.event
+      .getEventMessage(message.channel.id, message.author.id, this.event.typeEvent.message)
       .then((docs) => {
         if (docs.length > 0) {
-          // Controllo se è presente già un evento
-          let presence_event = 0
+          // Controllo se è scaduto
           docs.forEach((doc) => {
-            if (new Date() < new Date(doc.date.date_end)) {
-              presence_event++
+            if (new Date() < new Date(doc.date_end)) {
+              message.reply('Mi dispiace hai già un evento in costruzione')
+              return
+            } else {
+              const obj = {
+                cmd: this.cmd,
+                event: [this.event.typeEvent.message],
+                channel_id: message.channel.id,
+                author_id: message.author.id,
+                date_end: 100000,
+                options: { step: 1 },
+              }
+              this.event.saveEvent(obj).then(() => {
+                message.reply(
+                  "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
+                )
+                return
+              })
             }
           })
-          if (presence_event > 0) {
-            message.reply('Mi dispiace hai già un evento in costruzione')
-            return
-          } else {
-            const obj = {
-              channel_id: message.channel.id,
-              author_id: message.author.id,
-              date_end: 100000,
-              data: { step: 1 },
-            }
-            this.queue.saveQueue(this.cmd, this.queue.event.message, obj).then(() => {
-              message.reply("Ciao! Scrivi il nome dell' evento:")
-              return
-            })
-          }
         } else {
           const obj = {
+            cmd: this.cmd,
+            event: [this.event.typeEvent.message],
             channel_id: message.channel.id,
             author_id: message.author.id,
             date_end: 100000,
-            data: { step: 1 },
+            options: { step: 1 },
           }
-          this.queue.saveQueue(this.cmd, this.queue.event.message, obj).then(() => {
-            message.reply("Ciao! Scrivi il nome dell' evento:")
+          this.event.saveEvent(obj).then(() => {
+            message.reply(
+              "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
+            )
             return
           })
         }
@@ -70,7 +73,70 @@ module.exports = class Event extends Commands {
       })
   }
 
-  // async queuesReaction(message, doc) {}
+  /**
+   * Viene avviato per gestire un evento messageReactionAdd
+   */
+  eventReactionAdd(messageReaction, user, doc) {
+    const roleNotification = this.client._botUtility.getRoleFromName(
+      this.client,
+      'Notifica',
+      'Eventi',
+    )
+    this.client.channels.fetch(messageReaction.message.channel.id).then((channel) => {
+      channel.messages.fetch(messageReaction.message.id).then((message) => {
+        if (!doc.options.list_users.includes(user.id)) {
+          user.send(
+            `${user} Hai aderito all'evento: ${message.embeds[0].title}! Ti sarà inviata una notifica su Discord!`,
+          )
+          doc.options.list_users.push(user.id)
+          let element = ''
+          doc.options.list_users.map((e) => {
+            element += ` <@${e}> `
+          })
+          message.embeds[0].fields[0].value = element
+          this.event.updateEvent(doc._id, doc).then(async () => {
+            await message.edit(
+              `${roleNotification} nuovo evento clicca sulla ✅ emoji per partecipare (Modificato)`,
+              message.embeds,
+            )
+          })
+        }
+      })
+    })
+  }
+
+  /**
+   * Viene avviato per gestire un evento messageReactionRemove
+   */
+  eventReactionRemove(messageReaction, user, doc) {
+    const roleNotification = this.client._botUtility.getRoleFromName(
+      this.client,
+      'Notifica',
+      'Eventi',
+    )
+    this.client.channels.fetch(messageReaction.message.channel.id).then((channel) => {
+      channel.messages.fetch(messageReaction.message.id).then(async (message) => {
+        user.send(`${user} Hai lasciato l'evento: ${message.embeds[0].title}!`)
+        const new_list_users = doc.options.list_users.filter((e) => e !== user.id)
+        doc.options.list_users = new_list_users
+        let element = ''
+        doc.options.list_users.map((e) => {
+          element += ` <@${e}> `
+        })
+        if (new_list_users.length == 0) {
+          message.embeds[0].fields[0].value = 'Nessun utente presente'
+        } else {
+          message.embeds[0].fields[0].value = element
+        }
+        this.event.updateEvent(doc._id, doc).then(async () => {
+          await message.edit(
+            `${roleNotification} nuovo evento clicca sulla ✅ emoji per partecipare (Modificato)`,
+            message.embeds,
+          )
+        })
+      })
+    })
+  }
 
   /**
    * Questo metodo va a processare le chiamate in coda
@@ -79,50 +145,54 @@ module.exports = class Event extends Commands {
    * @param doc
    * @returns {Promise<void>}
    */
-  async queuesMessage(message, doc) {
-    /**
-     * Step
-     * 1. Note
-     * 2. Descrizione
-     * 3. Data
-     * 4. Link immagine
-     * 5. Link url
-     * 6. Avvio stampa
-     */
-
-    if (doc.data.step === 1) {
+  async eventMessage(message, doc) {
+    if (doc.options.step === 1) {
+      if (message.content.length == 0) {
+        message.reply('Il titolo deve avere dei caratteri, riprova!')
+        return
+      }
       message.reply('Hai scritto: ' + message.content + '!\nOk Ottimo ora scrivi la descrizione')
-      await this.queue.deleteQueue(doc._id)
-      const data = {
+      await this.event.deleteEvent(doc._id)
+      const obj = {
+        cmd: this.cmd,
+        event: [this.event.typeEvent.message],
         channel_id: message.channel.id,
         author_id: message.author.id,
         date_end: 100000,
-        data: { step: 2, obj: { title: message.content } },
+        options: { step: 2, obj: { title: message.content } },
       }
-      await this.queue.saveQueue(this.cmd, this.queue.event.message, data)
+      await this.event.saveEvent(obj)
     }
 
-    if (doc.data.step === 2) {
+    if (doc.options.step === 2) {
+      if (message.content.length == 0) {
+        message.reply('La descrizione non può essere vuota deve avere dei caratteri, riprova!')
+        return
+      }
       message.reply(
         'Hai scritto: ' +
           message.content +
-          '!\nOk Ottimo ora scrivi la data dell\'evento come d\'esempio "2013-11-18 11:55"',
+          '!\nOk Ottimo ora scrivi la options dell\'evento come d\'esempio "2013-11-18 11:55"',
       )
-      doc.data.obj.description = message.content
-      await this.queue.deleteQueue(doc._id)
-      const data = {
+      doc.options.obj.description = message.content
+      await this.event.deleteEvent(doc._id)
+      const obj = {
+        cmd: this.cmd,
+        event: [this.event.typeEvent.message],
         channel_id: message.channel.id,
         author_id: message.author.id,
         date_end: 100000,
-        data: { step: 3, obj: doc.data.obj },
+        options: { step: 3, obj: doc.options.obj },
       }
-      await this.queue.saveQueue(this.cmd, this.queue.event.message, data)
+      await this.event.saveEvent(obj)
     }
 
-    if (doc.data.step === 3) {
+    if (doc.options.step === 3) {
       if (Date.parse(message.content) - Date.now() <= 0) {
         message.reply(
-          'Hai scritto: ' + message.content + '!\n La data o il periodo non è corretto, riprova!',
+          'Hai scritto: ' +
+            message.content +
+            '!\n La options o il periodo non è corretto, riprova!',
         )
         return
       } else {
@@ -131,61 +201,67 @@ module.exports = class Event extends Commands {
             message.content +
             '!\n Ok Ottimo! Hai anche una immagine? Scrivi il link o altrimenti scrivi no',
         )
-        doc.data.obj.date = message.content
-        await this.queue.deleteQueue(doc._id)
-        const data = {
+        doc.options.obj.date = message.content
+        await this.event.deleteEvent(doc._id)
+        const obj = {
+          cmd: this.cmd,
+          event: [this.event.typeEvent.message],
           channel_id: message.channel.id,
           author_id: message.author.id,
           date_end: 100000,
-          data: { step: 4, obj: doc.data.obj },
+          options: { step: 4, obj: doc.options.obj },
         }
-        await this.queue.saveQueue(this.cmd, this.queue.event.message, data)
+        await this.event.saveEvent(obj)
       }
     }
 
-    if (doc.data.step === 4) {
+    if (doc.options.step === 4) {
       if (this.checkNoMessage(message)) {
         message.reply(
           "Ok, non hai aggiunto nessuna immagine. C'è anche un link? Scrivi il link o altrimenti scrivi no",
         )
-        await this.queue.deleteQueue(doc._id)
-        const data = {
+        await this.event.deleteEvent(doc._id)
+        const obj = {
+          cmd: this.cmd,
+          event: [this.event.typeEvent.message],
           channel_id: message.channel.id,
           author_id: message.author.id,
           date_end: 100000,
-          data: { step: 5, obj: doc.data.obj },
+          options: { step: 5, obj: doc.options.obj },
         }
-        await this.queue.saveQueue(this.cmd, this.queue.event.message, data)
+        await this.event.saveEvent(obj)
       } else {
         message.reply(
           'Hai scritto: ' +
             message.content +
             "!\n Ok Ottimo! Hai anche un link all'evento? Scrivi il link o altrimenti scrivi no",
         )
-        doc.data.obj.image = message.content
-        await this.queue.deleteQueue(doc._id)
-        const data = {
+        doc.options.obj.image = message.content
+        await this.event.deleteEvent(doc._id)
+        const obj = {
+          cmd: this.cmd,
+          event: [this.event.typeEvent.message],
           channel_id: message.channel.id,
           author_id: message.author.id,
           date_end: 100000,
-          data: { step: 5, obj: doc.data.obj },
+          options: { step: 5, obj: doc.options.obj },
         }
-        await this.queue.saveQueue(this.cmd, this.queue.event.message, data)
+        await this.event.saveEvent(obj)
       }
     }
 
-    if (doc.data.step === 5) {
+    if (doc.options.step === 5) {
       if (this.checkNoMessage(message)) {
         message.reply("Ok, non hai aggiunto nessun link. Ottimo ora creo l'evento!")
-        await this.queue.deleteQueue(doc._id)
-        await this.runMessaggeEvent(message, doc)
+        await this.event.deleteEvent(doc._id)
+        await this.runMessageEvent(message, doc)
       } else {
         message.reply(
           'Hai scritto: ' + message.content + "!\n Ok Ottimo! Ottimo ora creo l'evento!",
         )
-        doc.data.obj.link = message.content
-        await this.queue.deleteQueue(doc._id)
-        await this.runMessaggeEvent(message, doc)
+        doc.options.obj.link = message.content
+        await this.event.deleteEvent(doc._id)
+        await this.runMessageEvent(message, doc)
       }
     }
   }
@@ -205,9 +281,8 @@ module.exports = class Event extends Commands {
    * @param doc
    * @returns {Promise<void>}
    */
-  async runMessaggeEvent(message, doc) {
-    await this.queue.deleteQueue(doc._id)
-    const embed = this.getEmbedEvent(doc.data.obj)
+  async runMessageEvent(message, doc) {
+    const embed = this.getEmbedEvent(doc.options.obj)
     const roleNotification = this.client._botUtility.getRoleFromName(
       this.client,
       'Notifica',
@@ -217,131 +292,21 @@ module.exports = class Event extends Commands {
       (channel) => channel.id === this.client._botSettings.channel.event_id,
     )
     const embed_message = await eventChannel
-      .send(`${roleNotification} nuovo evento clicca sulla emoji per partecipare`, embed)
+      .send(`${roleNotification} nuovo evento clicca sulla emoji ✅ per partecipare`, embed)
       .catch((e) => {
         console.log(e)
       })
-    await embed_message.react('⏫')
-    await embed_message.react('⏬')
-
-    await this.queue.saveQueue(this.cmd, this.queue.event.messageReactionAdd, {
+    await embed_message.react('✅')
+    // Aggiungo l'evento reactions
+    await this.event.saveEvent({
+      cmd: this.cmd,
+      event: [this.event.typeEvent.messageReactionAdd, this.event.typeEvent.messageReactionRemove],
       channel_id: embed_message.channel.id,
       message_id: embed_message.id,
-      date_end: Date.parse(doc.data.obj.date) - Date.now(),
-      data: { embed_message: embed_message, list_users: [], emoji: '⏫' },
+      date_end: Date.parse(doc.options.obj.date) - Date.now(),
+      emoji: '✅',
+      options: { list_users: [] },
     })
-    await this.queue.saveQueue(this.cmd, this.queue.event.messageReactionRemove, {
-      channel_id: embed_message.channel.id,
-      message_id: embed_message.id,
-      date_end: Date.parse(doc.data.obj.date) - Date.now(),
-      data: { embed_message: embed_message, list_users: [], emoji: '⏬' },
-    })
-
-    // // Creo il sistema di filtraggio in base alla reaction e invio un messaggio privato
-    // const filter = (reaction, user) => {
-    //   if (reaction.emoji.name === '⏫') {
-    //     if (!embed.list_users.includes(user.id)) {
-    //       // Invio un messaggio privato
-    //       this.client.users
-    //         .fetch(user.id)
-    //         .then((_user) => {
-    //           _user.send(
-    //             `${user} Hai aderito all'evento: ${doc.data.obj.title}! Ti sarà inviata una notifica su Discord!`,
-    //           )
-    //         })
-    //         .catch((e) => {
-    //           console.log(e)
-    //         })
-    //     }
-    //     return true
-    //   } else if (reaction.emoji.name === '⏬') {
-    //     if (embed.list_users.includes(user.id)) {
-    //       // Invio un messaggio privato
-    //       this.client.users
-    //         .fetch(user.id)
-    //         .then((_user) => {
-    //           _user.send(`${user} Hai lasciato l'evento: ${doc.data.obj.title}!`)
-    //         })
-    //         .catch((e) => {
-    //           console.log(e)
-    //         })
-    //     }
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    // }
-    //
-    // // Avvio la collector del messaggio
-    // const collector = embed_message.createReactionCollector(filter, {
-    //   time: Date.parse(doc.data.obj.date) - Date.now(),
-    // })
-    // collector.on('collect', async (reaction, user) => {
-    //   if (reaction.emoji.name === '⏫') {
-    //     // Questo blocco va a aggiungere un utente nella lista list_users
-    //     // Verifico che non sia già presente
-    //     if (!embed.list_users.includes(user.id)) {
-    //       embed.list_users.push(user.id)
-    //       let element = ''
-    //       embed.list_users.map((e) => {
-    //         element += ` <@${e}> `
-    //       })
-    //       embed.fields[0].value = element
-    //       await embed_message.edit(
-    //         `${roleNotification} nuovo evento clicca sulla emoji per partecipare`,
-    //         embed,
-    //       )
-    //     }
-    //     await reaction.users.remove(user.id)
-    //   } else if (reaction.emoji.name === '⏬') {
-    //     // Questo blocco va a togliere un utente dalla lista list_users
-    //     const new_list_users = embed.list_users.filter((e) => e !== user.id)
-    //     embed.list_users = new_list_users
-    //     let element = ''
-    //     embed.list_users.map((e) => {
-    //       element += ` <@${e}> `
-    //     })
-    //     if (new_list_users.length == 0) {
-    //       embed.fields[0].value = 'Nessun utente presente'
-    //     } else {
-    //       embed.fields[0].value = element
-    //     }
-    //     await embed_message.edit(
-    //       `${roleNotification} nuovo evento clicca sulla emoji per partecipare`,
-    //       embed,
-    //     )
-    //     await reaction.users.remove(user.id)
-    //   }
-    // })
-    // // Ciclo di chiusura
-    // collector.on('end', async () => {
-    //   let element = ''
-    //   embed.list_users.map((e) => {
-    //     element += ` <@${e}> `
-    //   })
-    //   embed.fields[1].value = element
-    //   embed.footer = {}
-    //   await embed_message.edit(`L'evento è iniziato!`, embed)
-    //   // Vado a eliminare tutte le reazioni
-    //   embed_message.reactions.removeAll().catch((e) => {
-    //     console.log(e)
-    //   })
-    //   // Invio le notifiche a tutti gli utenti del ciclo.
-    //   embed.list_users.map((user_id) => {
-    //     this.client.users
-    //       .fetch(user_id)
-    //       .then((_user) => {
-    //         _user.send(
-    //           `Ciao, <@${_user}> l'evento ${doc.data.obj.title} è iniziato! ` + doc.data.obj.link
-    //             ? doc.data.obj.link
-    //             : '',
-    //         )
-    //       })
-    //       .catch((e) => {
-    //         console.log(e)
-    //       })
-    //   })
-    // })
   }
 
   /**
@@ -355,7 +320,7 @@ module.exports = class Event extends Commands {
     emb.setDescription(objParam.description)
     emb.setColor('RANDOM')
     emb.addField(`Utenti che parteciperanno all'evento`, `Nessun utente presente`)
-    emb.addField('Data Evento:', `${objParam.date}`)
+    emb.addField('options Evento:', `${objParam.date}`)
     if (objParam.link) {
       emb.addField(`Link evento`, `[${objParam.title}](${objParam.link})`)
     }

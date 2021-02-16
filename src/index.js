@@ -1,5 +1,6 @@
 const onError = require('./core/events/onError')
 const onMessage = require('./core/events/onMessage')
+const onReactionSteps = require('./core/events/onReactionSteps')
 const onClearNote = require('./core/events/onClearNote')
 const onStart = require('./core/events/onStart')
 const settings = require('./core/settings')
@@ -7,7 +8,7 @@ const { MessageEmbed } = require('discord.js')
 const fetch = require('node-fetch')
 const noteModel = require('./core/model/note')
 const myNoteModel = require('./core/model/myNote')
-const queueModel = require('./core/model/queue')
+const eventsModel = require('./core/model/events')
 const utility = require('./core/utility/utility')
 const onGuildMemberAdd = require('./core/events/onGuilMemberAdd')
 
@@ -101,14 +102,15 @@ module.exports = class Bot {
       opla: new Opla(this.client),
       eval: new Eval(this.client),
       update_role: new UpdateRole(this.client),
-      event: new Event(this.client, queueModel),
+      event: new Event(this.client, eventsModel),
       image: new Image(this.client),
     }
   }
 
   async loadCore() {
     onError.init(this.client)
-    onMessage.init(this.client, queueModel)
+    onMessage.init(this.client, eventsModel)
+    onReactionSteps.init(this.client, eventsModel)
     onClearNote.init(this.client)
     onGuildMemberAdd.init(this.client)
   }

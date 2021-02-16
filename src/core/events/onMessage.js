@@ -16,28 +16,33 @@ const extendMessage = (client, message) => {
  * Legge i messaggi ricevuti e ne gestisce se sono comandi
  * @param message
  * @param client
- * @param queueModel
+ * @param eventsModel
  * @returns {*}
  */
-async function readMessage(message, client, queueModel) {
+const readMessage = (message, client, eventsModel) => {
   // Controlla se è un bot
   if (message.author.bot) return
 
-  // Ciclo Queues
+  // Ciclo Steps
+  // Solo se il messaggio non contiene il prefisso
+  // TODO Solo se è in lista bianca
   if (message.content[0] !== client.conf.prefix) {
-    await queueModel
-      .getQueue(message.channel.id, message.author.id, queueModel.event.message)
+    eventsModel
+      .getEventMessage(message.channel.id, message.author.id, eventsModel.typeEvent.message)
       .then((docs) => {
         if (docs.length > 0) {
           docs.forEach((doc) => {
-            Object.values(client._botCommands).forEach((cmd) => {
-              if (doc.cmd == cmd.cmd && new Date() < new Date(doc.date_end)) {
-                cmd.queuesMessage(message, doc).catch((e) => {
-                  console.log(e)
-                })
-              }
-              return
-            })
+            if (doc) {
+              // Estrapolo la lista dei comandi
+              Object.values(client._botCommands).forEach((cmd) => {
+                if (doc.cmd == cmd.cmd && new Date() < new Date(doc.date_end)) {
+                  cmd.eventMessage(message, doc).catch((e) => {
+                    console.log(e)
+                  })
+                }
+                return
+              })
+            }
           })
         }
       })
@@ -77,6 +82,7 @@ async function readMessage(message, client, queueModel) {
       presence_cmd++
     }
   })
+
   // Se non ci sono risposte positive
   if (presence_cmd == 0) {
     const emb = new client._botMessageEmbed()
@@ -89,19 +95,15 @@ async function readMessage(message, client, queueModel) {
       console.log(e)
     })
   }
-  // Ciclo di pulizia queues scadute
-  // queueModel.cleanQueues().catch((e) => {
-  //   console.log(e)
-  // })
 }
 
 /**
  * Init della pagina
  * @param client
  */
-function init(client, queueModel) {
+function init(client, eventsModel) {
   client.on('message', (message) => {
-    readMessage(message, client, queueModel)
+    readMessage(message, client, eventsModel)
   })
 }
 module.exports = { init }
