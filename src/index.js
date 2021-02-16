@@ -73,6 +73,7 @@ module.exports = class Bot {
     const MyNote = require('./commands/my-note/myNote')
     const MyNotes = require('./commands/my-note/myNotes')
     const Image = require('./commands/test/image')
+    const Beer = require('./commands/beer/beer')
 
     return {
       // My note
@@ -104,6 +105,7 @@ module.exports = class Bot {
       update_role: new UpdateRole(this.client),
       event: new Event(this.client, eventsModel),
       image: new Image(this.client),
+      beer: new Beer(this.client),
     }
   }
 
