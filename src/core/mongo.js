@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 const debug = require('debug')(`${process.env.DEBUG_PREFIX}:mongo`)
 
+/**
+ * Driver per mongo
+ */
 class Mongo {
   constructor(
     options = {

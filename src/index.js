@@ -11,7 +11,11 @@ const myNoteModel = require('./core/model/myNote')
 const eventsModel = require('./core/model/events')
 const utility = require('./core/utility/utility')
 const onGuildMemberAdd = require('./core/events/onGuilMemberAdd')
-
+const onCronEvent = require('./core/events/onCronEvent')
+/**
+ * Core del bot
+ * @type {Bot}
+ */
 module.exports = class Bot {
   constructor(client, mongo) {
     client._botSettings = settings
@@ -23,8 +27,9 @@ module.exports = class Bot {
       prefix: process.env.PREFIX,
     }
     this.client = client
+    this.cron = require('cron').CronJob
 
-    // Load Command
+    // Carico tutti i comandi presenti nel metodo loadCommands
     client._botCommands = this.loadCommands()
     // Avvio il core del bot
     this.loadCore(client).catch((e) => {
@@ -36,6 +41,8 @@ module.exports = class Bot {
         throw error
       } else {
         console.log('Bot online per chiudere CONT + C')
+        // Avvio il cron tab
+        this.cron_event.start()
         client.user.setActivity(`${process.env.PREFIX}help per maggiori dettagli`).catch((e) => {
           console.log(e)
         })
@@ -45,7 +52,6 @@ module.exports = class Bot {
       }
     })
   }
-
   loadCommands() {
     const Help = require('./commands/help')
     const Ban = require('./commands/ban/ban')
@@ -108,12 +114,25 @@ module.exports = class Bot {
       beer: new Beer(this.client),
     }
   }
-
+  /**
+   * Questo processo carica tutte i processi del bot
+   * @return {Promise<void>}
+   */
   async loadCore() {
     onError.init(this.client)
     onMessage.init(this.client, eventsModel)
     onReactionSteps.init(this.client, eventsModel)
     onClearNote.init(this.client)
     onGuildMemberAdd.init(this.client)
+    // Preparo il cron tab
+    this.cron_event = new this.cron(
+      '* * * * * *',
+      () => {
+        onCronEvent.init(this.client, eventsModel)
+      },
+      null,
+      false,
+      'Europe/Rome',
+    )
   }
 }

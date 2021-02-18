@@ -4,7 +4,7 @@ const myNoteModel = require('../model/myNote')
  * Questa pagina intercetta gli eventi di cancellazione dei messaggi e canali.
  * Quando viene eliminato un canale o un messaggio, chiama il db e elimina gli
  * element associati a quei canali o messaggi.
- * @param client
+ * @param client {module:"discord.js".Client}
  */
 function init(client) {
   // Estrapolo tutti gli eventi

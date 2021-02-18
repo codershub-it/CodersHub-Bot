@@ -1,5 +1,10 @@
 const Commands = require('../../core/command')
-
+/**
+ * Questo comando crea un nuovo evento.
+ * Gli utenti posso registrarsi è quando scadrà l'evento
+ * saranno avvisati con un messaggio privato.
+ * @type {RegisterEvent}
+ */
 module.exports = class Event extends Commands {
   constructor(client, event) {
     super(client)
@@ -21,8 +26,7 @@ module.exports = class Event extends Commands {
 
   /**
    * Qui si esegue il processo del comando
-   * @param message
-   * @param bot
+   * @param message {module:"discord.js".Message}
    */
   async execution(message) {
     await this.event
@@ -43,6 +47,7 @@ module.exports = class Event extends Commands {
                 date_end: 100000,
                 options: { step: 1 },
               }
+              // Avvio l'evento messaggio
               this.event.saveEvent(obj).then(() => {
                 message.reply(
                   "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
@@ -60,6 +65,7 @@ module.exports = class Event extends Commands {
             date_end: 100000,
             options: { step: 1 },
           }
+          // Avvio l'evento messaggio
           this.event.saveEvent(obj).then(() => {
             message.reply(
               "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
@@ -74,7 +80,65 @@ module.exports = class Event extends Commands {
   }
 
   /**
+   * Questo metodo viene avviato solo alla scadenza di un determinato evento tipo messaggio
+   * @param doc {Document}
+   */
+  eventMessageClose(doc) {
+    this.client.channels.fetch(doc.channel_id).then((channel) => {
+      // Stampo il messaggio di avviso all'utente
+      channel.send(
+        `<@${doc.author_id}> comando **&event** è scaduto, rilancia il comando per aggiungere un evento.`,
+      )
+      // Elimino l'evento
+      this.event.deleteEvent(doc._id)
+    })
+  }
+
+  /**
+   * Questo metodo viene avviato solo alla scadenza di un determinato evento tipo reazione
+   * @param doc {Document}
+   */
+  eventReactionClose(doc) {
+    const roleNotification = this.client._botUtility.getRoleFromName(
+      this.client,
+      'Notifica',
+      'Eventi',
+    )
+    this.client.channels.fetch(doc.channel_id).then((channel) => {
+      channel.messages.fetch(doc.message_id).then(async (message) => {
+        // Tolgo tutte le reactions
+        await message.reactions.removeAll()
+        // Modifico il titolo del evento
+        await message.edit(`${roleNotification} L'evento è cominciato!`, message.embeds)
+        // Invio tutti i messaggi privati
+        const mentions_user = doc.options.list_users
+        if (mentions_user.length > 0) {
+          mentions_user.forEach((user_id) => {
+            this.client.users.fetch(user_id).then((user) => {
+              // Invio il messaggio privato all'utente
+              user.send(
+                `${user} L'evento: ${message.embeds[0].title} è cominciato! [link](${message.embeds[0].url})` +
+                  message.embeds[0].url
+                  ? `[link](${message.embeds[0].url})`
+                  : '',
+              )
+            })
+          })
+        }
+        // Elimino tutti gli eventi di quel messaggio di tipo reaction perché ho eliminato tutte le reactions
+        await this.event.deleteManyEvents({
+          channel_id: doc.channel_id,
+          message_id: doc.message_id,
+        })
+      })
+    })
+  }
+
+  /**
    * Viene avviato per gestire un evento messageReactionAdd
+   * @param messageReaction {module:"discord.js".MessageReaction}
+   * @param user {module:"discord.js".User}
+   * @param doc {Document}
    */
   eventReactionAdd(messageReaction, user, doc) {
     const roleNotification = this.client._botUtility.getRoleFromName(
@@ -88,12 +152,14 @@ module.exports = class Event extends Commands {
           user.send(
             `${user} Hai aderito all'evento: ${message.embeds[0].title}! Ti sarà inviata una notifica su Discord!`,
           )
+          // Aggiungo l'utente alla lista degli utenti iscritti
           doc.options.list_users.push(user.id)
           let element = ''
           doc.options.list_users.map((e) => {
             element += ` <@${e}> `
           })
           message.embeds[0].fields[0].value = element
+          // Aggiorno l'evento
           this.event.updateEvent(doc._id, doc).then(async () => {
             await message.edit(
               `${roleNotification} nuovo evento clicca sulla ✅ emoji per partecipare (Modificato)`,
@@ -104,9 +170,11 @@ module.exports = class Event extends Commands {
       })
     })
   }
-
   /**
    * Viene avviato per gestire un evento messageReactionRemove
+   * @param messageReaction {module:"discord.js".MessageReaction}
+   * @param user {module:"discord.js".User}
+   * @param doc {Document}
    */
   eventReactionRemove(messageReaction, user, doc) {
     const roleNotification = this.client._botUtility.getRoleFromName(
@@ -117,6 +185,7 @@ module.exports = class Event extends Commands {
     this.client.channels.fetch(messageReaction.message.channel.id).then((channel) => {
       channel.messages.fetch(messageReaction.message.id).then(async (message) => {
         user.send(`${user} Hai lasciato l'evento: ${message.embeds[0].title}!`)
+        // Elimino l'utente che ha tolto l'emoji
         const new_list_users = doc.options.list_users.filter((e) => e !== user.id)
         doc.options.list_users = new_list_users
         let element = ''
@@ -128,6 +197,7 @@ module.exports = class Event extends Commands {
         } else {
           message.embeds[0].fields[0].value = element
         }
+        // Aggiorno l'evento
         this.event.updateEvent(doc._id, doc).then(async () => {
           await message.edit(
             `${roleNotification} nuovo evento clicca sulla ✅ emoji per partecipare (Modificato)`,
@@ -268,7 +338,7 @@ module.exports = class Event extends Commands {
 
   /**
    * Verifico se c'è il no o No
-   * @param message
+   * @param message {module:"discord.js".Message}
    * @returns {boolean}
    */
   checkNoMessage(message) {
@@ -277,8 +347,8 @@ module.exports = class Event extends Commands {
 
   /**
    * Stampo l'evento
-   * @param message
-   * @param doc
+   * @param message {module:"discord.js".Message}
+   * @param doc {Document}
    * @returns {Promise<void>}
    */
   async runMessageEvent(message, doc) {
@@ -311,7 +381,7 @@ module.exports = class Event extends Commands {
 
   /**
    * Creo il messaggio embed
-   * @param objParam
+   * @param objParam {Object}
    * @returns {module:"discord.js".MessageEmbed}
    */
   getEmbedEvent(objParam) {
@@ -324,10 +394,17 @@ module.exports = class Event extends Commands {
     if (objParam.link) {
       emb.addField(`Link evento`, `[${objParam.title}](${objParam.link})`)
     }
-    if (objParam.image) {
-      emb.setThumbnail(objParam.image)
-    }
-    emb.setFooter("Usa le emoji ⏫ per entrare e ⏬ per uscire dall'evento")
+    emb.setThumbnail(
+      objParam.image
+        ? objParam.image
+        : 'https://media1.tenor.com/images/d7ef1ed319752179f2ee97f9bd4b2ef4/tenor.gif',
+    )
+    emb.setFooter(
+      `Clicca sulla emoji ✅ per partecipare all'evento è ricevere una notifica privata quando l'evento partirà!`,
+      objParam.image
+        ? objParam.image
+        : 'https://media1.tenor.com/images/ac032149017172ffc25571fae9fb6a63/tenor.gif',
+    )
     return emb
   }
 }

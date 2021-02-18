@@ -1,5 +1,6 @@
 /**
  * Questa è la classe madre di commands se si vuole creare dei metodi o variabili per tutti i comandi
+ * Ogni canale deve essere esteso da questa classe.
  * @type {Commands}
  */
 module.exports = class Commands {

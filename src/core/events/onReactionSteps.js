@@ -19,7 +19,6 @@ function init(client, eventsModel) {
                     doc.emoji === messageReaction._emoji.name &&
                     new Date() < new Date(doc.date_end)
                   ) {
-                    console.log('Reaction Add Function start')
                     cmd.eventReactionAdd(messageReaction, user, doc)
                   }
                 })
@@ -52,7 +51,6 @@ function init(client, eventsModel) {
                     doc.emoji === messageReaction._emoji.name &&
                     new Date() < new Date(doc.date_end)
                   ) {
-                    console.log('Reaction Remove Function start')
                     cmd.eventReactionRemove(messageReaction, user, doc)
                   }
                 })
