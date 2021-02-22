@@ -10,20 +10,7 @@ function init(client, eventsModel) {
         )
         .then((docs) => {
           if (docs.length > 0) {
-            docs.forEach((doc) => {
-              if (doc) {
-                // Estrapolo la lista dei comandi
-                Object.values(client._botCommands).forEach((cmd) => {
-                  if (
-                    doc.cmd == cmd.cmd &&
-                    doc.emoji === messageReaction._emoji.name &&
-                    new Date() < new Date(doc.date_end)
-                  ) {
-                    cmd.eventReactionAdd(messageReaction, user, doc)
-                  }
-                })
-              }
-            })
+            getEventReactionAddFromDocs(client, docs, messageReaction, user)
           }
         })
         .catch((e) => {
@@ -42,20 +29,7 @@ function init(client, eventsModel) {
         )
         .then((docs) => {
           if (docs.length > 0) {
-            docs.forEach((doc) => {
-              if (doc) {
-                // Estrapolo la lista dei comandi
-                Object.values(client._botCommands).forEach((cmd) => {
-                  if (
-                    doc.cmd == cmd.cmd &&
-                    doc.emoji === messageReaction._emoji.name &&
-                    new Date() < new Date(doc.date_end)
-                  ) {
-                    cmd.eventReactionRemove(messageReaction, user, doc)
-                  }
-                })
-              }
-            })
+            getEventReactionRemoveFromDocs(client, docs, messageReaction, user)
           }
         })
         .catch((e) => {
@@ -64,4 +38,39 @@ function init(client, eventsModel) {
     }
   })
 }
+
+function getEventReactionAddFromDocs(client, docs, messageReaction, user) {
+  docs.forEach((doc) => {
+    if (doc) {
+      // Estrapolo la lista dei comandi
+      Object.values(client._botCommands).forEach((cmd) => {
+        if (
+          doc.cmd === cmd.cmd &&
+          doc.emoji === messageReaction._emoji.name &&
+          new Date() < new Date(doc.date_end)
+        ) {
+          cmd.eventReactionAdd(messageReaction, user, doc)
+        }
+      })
+    }
+  })
+}
+
+function getEventReactionRemoveFromDocs(client, docs, messageReaction, user) {
+  docs.forEach((doc) => {
+    if (doc) {
+      // Estrapolo la lista dei comandi
+      Object.values(client._botCommands).forEach((cmd) => {
+        if (
+          doc.cmd === cmd.cmd &&
+          doc.emoji === messageReaction._emoji.name &&
+          new Date() < new Date(doc.date_end)
+        ) {
+          cmd.eventReactionRemove(messageReaction, user, doc)
+        }
+      })
+    }
+  })
+}
+
 module.exports = { init }

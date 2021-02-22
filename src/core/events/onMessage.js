@@ -25,7 +25,6 @@ const readMessage = (message, client, eventsModel) => {
 
   // Ciclo Steps
   // Solo se il messaggio non contiene il prefisso
-  // TODO Solo se è in lista bianca
   if (message.content[0] !== client.conf.prefix) {
     eventsModel
       .getEventMessage(message.channel.id, message.author.id, eventsModel.typeEvent.message)

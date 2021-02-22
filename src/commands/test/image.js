@@ -26,7 +26,7 @@ module.exports = class Image extends Commands {
     const canvas = Canvas.createCanvas(700, 250)
     const ctx = canvas.getContext('2d')
 
-    const background = await Canvas.loadImage('./static/wallpaper.jpg')
+    const background = await Canvas.loadImage('./static/wallpaper-1.jpg')
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 
     ctx.strokeStyle = '#74037b'
@@ -40,7 +40,11 @@ module.exports = class Image extends Commands {
     // Add an exclamation point here and below
     ctx.font = this.applyText(canvas, `${message.member.displayName}!`)
     ctx.fillStyle = '#ffffff'
-    ctx.fillText(`${message.member.displayName}!`, canvas.width / 2.5, canvas.height / 1.8)
+    ctx.fillText(`${message.member.displayName}!`, canvas.width / 2.5, canvas.height / 2)
+
+    ctx.font = this.applyText(canvas, `Benvenuto nel mondo di CodersHub!`)
+    ctx.fillStyle = '#ffffff'
+    ctx.fillText(`Benvenuto nel mondo di CodersHub!`, canvas.width / 2.5, canvas.height / 1.5)
 
     ctx.beginPath()
     ctx.arc(125, 125, 100, 0, Math.PI * 2, true)

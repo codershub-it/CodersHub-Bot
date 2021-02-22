@@ -39,39 +39,29 @@ module.exports = class Event extends Commands {
               message.reply('Mi dispiace hai già un evento in costruzione')
               return
             } else {
-              const obj = {
-                cmd: this.cmd,
-                event: [this.event.typeEvent.message],
-                channel_id: message.channel.id,
-                author_id: message.author.id,
-                date_end: 100000,
-                options: { step: 1 },
-              }
-              // Avvio l'evento messaggio
-              this.event.saveEvent(obj).then(() => {
-                message.reply(
-                  "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
-                )
-                return
-              })
+              this.event
+                .saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+                  step: 1,
+                })
+                .then(() => {
+                  message.reply(
+                    "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
+                  )
+                  return
+                })
             }
           })
         } else {
-          const obj = {
-            cmd: this.cmd,
-            event: [this.event.typeEvent.message],
-            channel_id: message.channel.id,
-            author_id: message.author.id,
-            date_end: 100000,
-            options: { step: 1 },
-          }
-          // Avvio l'evento messaggio
-          this.event.saveEvent(obj).then(() => {
-            message.reply(
-              "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
-            )
-            return
-          })
+          this.event
+            .saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+              step: 1,
+            })
+            .then(() => {
+              message.reply(
+                "Ciao è stato avviato il sistema di creazione dell'evento! Scrivi il nome dell' evento:",
+              )
+              return
+            })
         }
       })
       .catch((e) => {
@@ -223,15 +213,10 @@ module.exports = class Event extends Commands {
       }
       message.reply('Hai scritto: ' + message.content + '!\nOk Ottimo ora scrivi la descrizione')
       await this.event.deleteEvent(doc._id)
-      const obj = {
-        cmd: this.cmd,
-        event: [this.event.typeEvent.message],
-        channel_id: message.channel.id,
-        author_id: message.author.id,
-        date_end: 100000,
-        options: { step: 2, obj: { title: message.content } },
-      }
-      await this.event.saveEvent(obj)
+      await this.event.saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+        step: 2,
+        obj: { title: message.content },
+      })
     }
 
     if (doc.options.step === 2) {
@@ -246,15 +231,10 @@ module.exports = class Event extends Commands {
       )
       doc.options.obj.description = message.content
       await this.event.deleteEvent(doc._id)
-      const obj = {
-        cmd: this.cmd,
-        event: [this.event.typeEvent.message],
-        channel_id: message.channel.id,
-        author_id: message.author.id,
-        date_end: 100000,
-        options: { step: 3, obj: doc.options.obj },
-      }
-      await this.event.saveEvent(obj)
+      await this.event.saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+        step: 3,
+        obj: doc.options.obj,
+      })
     }
 
     if (doc.options.step === 3) {
@@ -273,15 +253,10 @@ module.exports = class Event extends Commands {
         )
         doc.options.obj.date = message.content
         await this.event.deleteEvent(doc._id)
-        const obj = {
-          cmd: this.cmd,
-          event: [this.event.typeEvent.message],
-          channel_id: message.channel.id,
-          author_id: message.author.id,
-          date_end: 100000,
-          options: { step: 4, obj: doc.options.obj },
-        }
-        await this.event.saveEvent(obj)
+        await this.event.saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+          step: 4,
+          obj: doc.options.obj,
+        })
       }
     }
 
@@ -291,15 +266,10 @@ module.exports = class Event extends Commands {
           "Ok, non hai aggiunto nessuna immagine. C'è anche un link? Scrivi il link o altrimenti scrivi no",
         )
         await this.event.deleteEvent(doc._id)
-        const obj = {
-          cmd: this.cmd,
-          event: [this.event.typeEvent.message],
-          channel_id: message.channel.id,
-          author_id: message.author.id,
-          date_end: 100000,
-          options: { step: 5, obj: doc.options.obj },
-        }
-        await this.event.saveEvent(obj)
+        await this.event.saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+          step: 5,
+          obj: doc.options.obj,
+        })
       } else {
         message.reply(
           'Hai scritto: ' +
@@ -308,15 +278,10 @@ module.exports = class Event extends Commands {
         )
         doc.options.obj.image = message.content
         await this.event.deleteEvent(doc._id)
-        const obj = {
-          cmd: this.cmd,
-          event: [this.event.typeEvent.message],
-          channel_id: message.channel.id,
-          author_id: message.author.id,
-          date_end: 100000,
-          options: { step: 5, obj: doc.options.obj },
-        }
-        await this.event.saveEvent(obj)
+        await this.event.saveEventMessage(this.cmd, message.channel.id, message.author.id, 100000, {
+          step: 5,
+          obj: doc.options.obj,
+        })
       }
     }
 
@@ -368,15 +333,15 @@ module.exports = class Event extends Commands {
       })
     await embed_message.react('✅')
     // Aggiungo l'evento reactions
-    await this.event.saveEvent({
-      cmd: this.cmd,
-      event: [this.event.typeEvent.messageReactionAdd, this.event.typeEvent.messageReactionRemove],
-      channel_id: embed_message.channel.id,
-      message_id: embed_message.id,
-      date_end: Date.parse(doc.options.obj.date) - Date.now(),
-      emoji: '✅',
-      options: { list_users: [] },
-    })
+    await this.event.saveEventReaction(
+      this.cmd,
+      [this.event.typeEvent.messageReactionAdd, this.event.typeEvent.messageReactionRemove],
+      embed_message.channel.id,
+      embed_message.id,
+      Date.parse(doc.options.obj.date) - Date.now(),
+      '✅',
+      { list_users: [] },
+    )
   }
 
   /**

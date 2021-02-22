@@ -7,7 +7,8 @@ module.exports = class Hint extends Commands {
     this.alias = 'hint'
     this.args = ''
     this.example = `${client.conf.prefix}proposta creare un canale per discutere di nodejs e delle sue funzinoalità`
-    this.description = 'Suggerimenti per migliorare il server di CodersHub'
+    this.description =
+      'Suggerimenti per migliorare il server di CodersHub, qui puoi proporre tutto quello che riteni utile come nuovi comandi o nuovi canali'
     this.timer = 0
     this.access = []
     this.displayHelp = 1
@@ -29,6 +30,8 @@ module.exports = class Hint extends Commands {
       emb.setThumbnail(message.author.avatarURL())
       emb.setDescription(args)
       emb.setColor('RANDOM')
+      emb.addField('Stato proposta', 'In attesa di conferma')
+      emb.setFooter(`Proposta id: ${message.id}`)
       emb.setTimestamp()
       const roleNotification = this.client._botUtility.getRoleFromName(
         this.client,
