@@ -29,30 +29,41 @@ module.exports = class Image extends Commands {
     const background = await Canvas.loadImage('./static/wallpaper-1.jpg')
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 
+    ctx.beginPath()
+    ctx.rect(250, 25, 425, 200)
+    ctx.fillStyle = 'rgba(0,0,0,0.8)'
+    ctx.fill()
+    ctx.stroke()
+
     ctx.strokeStyle = '#74037b'
     ctx.strokeRect(0, 0, canvas.width, canvas.height)
 
     // Slightly smaller text placed above the member's display name
     ctx.font = '28px sans-serif'
     ctx.fillStyle = '#ffffff'
-    ctx.fillText('Ciao,', canvas.width / 2.5, canvas.height / 3.5)
+    ctx.fillText('Ciao,', canvas.width / 2.6, canvas.height / 3.5)
 
     // Add an exclamation point here and below
     ctx.font = this.applyText(canvas, `${message.member.displayName}!`)
     ctx.fillStyle = '#ffffff'
-    ctx.fillText(`${message.member.displayName}!`, canvas.width / 2.5, canvas.height / 2)
+    ctx.fillText(`${message.member.displayName}!`, canvas.width / 2.6, canvas.height / 2)
 
     ctx.font = this.applyText(canvas, `Benvenuto nel mondo di CodersHub!`)
     ctx.fillStyle = '#ffffff'
-    ctx.fillText(`Benvenuto nel mondo di CodersHub!`, canvas.width / 2.5, canvas.height / 1.5)
+    ctx.fillText(`Benvenuto nel mondo di CodersHub!`, canvas.width / 2.6, canvas.height / 1.5)
 
     ctx.beginPath()
     ctx.arc(125, 125, 100, 0, Math.PI * 2, true)
     ctx.closePath()
     ctx.clip()
 
-    const avatar = await Canvas.loadImage(message.member.user.displayAvatarURL({ format: 'jpg' }))
-    ctx.drawImage(avatar, 25, 25, 200, 200)
+    if (message.member.user.displayAvatarURL({ format: 'jpg' })) {
+      const avatar = await Canvas.loadImage(message.member.user.displayAvatarURL({ format: 'jpg' }))
+      ctx.drawImage(avatar, 25, 25, 200, 200)
+    } else {
+      const avatar = await Canvas.loadImage(message.guild.iconURL({ format: 'jpg' }))
+      ctx.drawImage(avatar, 25, 25, 200, 200)
+    }
 
     const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png')
     await message.channel.send(`Ciao, ${message.member}!`, attachment)
